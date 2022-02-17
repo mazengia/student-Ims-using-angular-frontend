@@ -1,0 +1,191 @@
+
+<nz-card [nzTitle]="cardTitle" [nzExtra]="tabExtraTpl">
+  <ng-template #cardTitle>
+    <i nz-icon nzType="branches"></i>  course
+  </ng-template>
+  <ng-template #tabExtraTpl>
+    <button nz-button nzType="primary" (click)="open()" class="add-button"><i nz-icon nzType="plus"></i>Add course</button>
+  </ng-template>
+  <nz-table #basicTable [nzData]="listOfCourseData"
+            nzSize="small"
+            [nzFrontPagination]="false"
+            [nzTotal]="totalElements"
+            [(nzPageIndex)]="pageNumber"
+            [(nzPageSize)]="pageSize"
+            nzShowPagination
+            nzShowSizeChanger
+            nzShowQuickJumper
+            (nzPageIndexChange)	="loadCourse()"
+            (nzPageSizeChange)="loadCourse(true)">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Code</th>
+      <th>creditHour</th>
+      <th>ects</th>
+<!--      <th>Department</th>-->
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of basicTable.data; let i = index">
+      <td>{{ i+1 }}</td>
+      <td>{{ data.name }}</td>
+      <td>{{ data.code }}</td>
+      <td>{{ data.creditHour }}</td>
+      <td>{{ data.ects }}</td>
+      <td nzAlign="center" >
+        <div  nz-row>
+          <div   nz-col nzSpan="8"></div>
+          <div   nz-col nzSpan="4">
+            <i class="edit-btn"    nz-icon nzType="edit"  (click)="editDrawer(data.id)"   nzTheme="outline" nz-tooltip="edit"></i>
+          </div>
+          <div   nz-col nzSpan="4">  </div>
+          <div  nz-col nzSpan="4">
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this task?"
+               (nzOnConfirm)="confirm(data.id)" (nzOnCancel)="cancel()"  >
+              <i class="delete-button" nzTooltipColor="red"  nz-icon nzType="delete" nzTheme="outline"  nz-tooltip="delete"></i>
+            </a>
+          </div>
+          <div   nz-col nzSpan="4">  </div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+
+<!--    add drawer-->
+
+<nz-drawer
+  [nzClosable]="true"
+  [nzVisible]="visibleDrawer"
+  nzPlacement="right"
+  nzWidth="30%"
+  nzTitle="Add new course"
+  (nzOnClose)="close()">
+  <form *nzDrawerContent nz-form [formGroup]="courseForm" (ngSubmit)="saveCourse(courseForm.value)">
+    <div *ngIf="successMessage">
+      <div class="row">
+        <div class="col-md-1 "></div>
+        <div class="col-md-10 alert alert-success">
+          <H4>{{successMessage}}</H4>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+    </div>
+    <div *ngIf="errorMessage">
+      <div class="row">
+        <div class="col-md-1 "></div>
+        <div class="col-md-10 alert alert-danger">
+          <H4>{{errorMessage}}</H4>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+    </div>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>name</nz-form-label>
+      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
+        <input nz-input formControlName="name"   />
+        <ng-template #userErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Please input name!</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>code</nz-form-label>
+      <nz-form-control [nzSpan]="18"   [nzErrorTip]="codeErrorTpl">
+        <input nz-input formControlName="code"   />
+        <ng-template #codeErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Please input code!</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>credit Hour</nz-form-label>
+      <nz-form-control [nzSpan]="18"   [nzErrorTip]="crErrorTpl">
+        <input type="number" nz-input formControlName="creditHour"   />
+        <ng-template #crErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Please input credit Hour!</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>ECTS</nz-form-label>
+      <nz-form-control [nzSpan]="18"   [nzErrorTip]="ectsErrorTpl">
+        <input type="number" nz-input formControlName="ects"   />
+        <ng-template #ectsErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Please input ects!</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzFor="gender" nzRequired>Department</nz-form-label>
+        <nz-select   formControlName="departmentId" nzPlaceHolder="Select department"  >
+          <nz-option *ngFor="let data of listOfDepartmentData" id="{{data._embedded.departmentDTOList.id}}"  nzValue="{{data._embedded.departmentDTOList.id}}" nzLabel="{{data._embedded.departmentDTOList.name}}"></nz-option>
+        </nz-select>
+    </nz-form-item>
+
+
+    <nz-form-item>
+      <nz-form-control [nzOffset]="7" [nzSpan]="18">
+        <button nz-button nzType="primary" [disabled]="!courseForm.valid">Submit</button>
+        <button style="margin-top: 10px" nz-button (click)="resetForm($event)">Reset</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-drawer>
+
+
+<!--    edit drawer-->
+
+<nz-drawer
+  [nzClosable]="true"
+  [nzVisible]="visibleEditDrawer"
+  nzWidth="25%"
+  nzPlacement="right"
+  nzTitle="Edit course"
+  (nzOnClose)="closeEditDrawer()" >
+
+  <form *nzDrawerContent  nz-form [formGroup]="editForm" (ngSubmit)="UpdateForm(editForm.value)">
+    <div *ngIf="successMessage">
+      <div class="row">
+        <div class="col-md-1 "></div>
+        <div class="col-md-10 alert alert-success">
+          <H4 style="color: green">{{successMessage}}</H4>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+    </div>
+    <div *ngIf="errorMessage">
+      <div class="row">
+        <div class="col-md-1 "></div>
+        <div class="col-md-10 alert alert-danger">
+          <H4>{{errorMessage}}</H4>
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+    </div>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>Name</nz-form-label>
+      <nz-form-control [nzSpan]="16"  >
+        <input   formControlName="name"   ngModel="{{editObject.name }}"  />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzOffset]="7" [nzSpan]="12">
+        <button nz-button nzType="primary" >Submit</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-drawer>
+
+<!--    edit drawer-->
+
+

@@ -1,0 +1,105 @@
+<nz-layout class="app-layout">
+  <nz-sider class="menu-sidebar"
+            nzCollapsible
+            nzWidth="256px"
+            nzBreakpoint="md"
+            [(nzCollapsed)]="isCollapsed"
+            [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <a href="#" target=" ">
+        <img src="favicon.ico" alt="logo">
+        <h1>Enat BK SC</h1>
+      </a>
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="welcome">Welcome</a>
+          </li>
+
+        </ul>
+      </li>
+
+      <li nz-submenu nzOpen nzTitle="Students" nzIcon="dashboard">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="student-enroll">Enroll Student</a>
+          </li>
+
+        </ul>
+      </li>
+
+      <li nz-submenu nzOpen nzTitle="Maintenance" nzIcon="form">
+        <ul>
+
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="department">Departments</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="student">student</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="course">Course</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="program">Programs</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="program-type">program-type</a>
+          </li>
+
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="dpt">DPT</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="role">Role</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="status">status</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="category">Category</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="collateral">Collateral</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="sector">Sectors</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+            <i class="trigger"  nz-icon    [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+        </span>
+        <span class="user-name">
+          <a nz-dropdown [nzDropdownMenu]="menu">
+<!--      {{authenticatedUserName}}-->
+      <i nz-icon nzType="down"></i>
+    </a>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+      <li nzicon="logout" class="ant-menu-submenu ant-menu-submenu-vertical">
+        <div   class="ant-menu-submenu-title">
+          <i nz-icon nzType="logout" nzTheme="outline"></i>
+          <!--          <span class="ng-star-inserted" (click)="logout()">Logout</span>-->
+           <span class="ng-star-inserted" >Logout</span>
+      </div>
+      </li>
+      </ul>
+    </nz-dropdown-menu>
+        </span>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
