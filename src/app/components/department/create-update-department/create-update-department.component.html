@@ -1,0 +1,25 @@
+<form  nz-form [formGroup]="departmentForm" (ngSubmit)="saveDepartment()">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>name</nz-form-label>
+    <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
+      <input nz-input formControlName="name"   />
+      <ng-template #userErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Please input department!</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>code</nz-form-label>
+    <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
+      <input nz-input formControlName="code"   />
+      <ng-template #userErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Please input code!</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="18">
+      <button nz-button nzType="primary" [disabled]="!departmentForm.valid">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

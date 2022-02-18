@@ -28,6 +28,7 @@ import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
+import {CreateUpdateDepartmentComponent} from "../department/create-update-department/create-update-department.component";
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import {NzSelectModule} from "ng-zorro-antd/select";
     CourseComponent,
     CourseEnrolComponent,
     DepartmentComponent,
+    CreateUpdateDepartmentComponent,
     DptComponent,
     ProgramComponent,
     ProgramTypeComponent,

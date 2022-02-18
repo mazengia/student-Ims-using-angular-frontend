@@ -1,34 +1,46 @@
-
-import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Roles, RolesResponse} from '../model/Roles';
+import {TokenStorageService} from "../config/_services/token-storage.service";
+const httpOptions = { headers: new HttpHeaders(
+    { 'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer',
+    })
+};
 @Injectable({
   providedIn: 'root'
 })
 export class RolesService {
 
-  constructor(private http:HttpClient) { }
+  constructor(
+    private http: HttpClient) {
+  }
 
-  getRoles(pageNumber:number = 1,pageSize:number = 10 ):Observable<RolesResponse>
-  {const params =  new HttpParams()
-    .append('page',`${pageNumber}`)
-    .append('size',`${pageSize}`);
-    return this.http.get<RolesResponse>(`${environment.Url}/role`,{params} );
+  getRoles(pageNumber: number = 1, pageSize: number = 10): Observable<RolesResponse> {
+    const params = new HttpParams()
+      .append('page', `${pageNumber}`)
+      .append('size', `${pageSize}`);
+    return this.http.get<RolesResponse>(`${environment.Url}/role`, {params});
   }
-  addRoles(roleName:any):Observable<Roles>
-  {
-    return this.http.post<Roles>(`${environment.Url}/role`,roleName );
+
+  addRoles(roleName: any): Observable<Roles> {
+    console.log("httpOptions = ",httpOptions)
+    return this.http.post<Roles>(`${environment.Url}/role`, roleName);
+
   }
-  deleteRoles(id:number):Observable<Roles>
-  {
-    return this.http.delete<Roles>(`${environment.Url}/role/${id}`   );
+
+  deleteRoles(id: number): Observable<Roles> {
+    return this.http.delete<Roles>(`${environment.Url}/role/${id}`);
   }
+
   updateRoles(id: number, roleName: any): Observable<Roles> {
-    return this.http.put<Roles>(`${environment.Url}/role/${id}`, roleName );
+    return this.http.put<Roles>(`${environment.Url}/role/${id}`, roleName);
   }
+
   findRolesById(id: number): Observable<Roles> {
-    return this.http.get<Roles>(`${environment.Url}/role/${id}` );
+    return this.http.get<Roles>(`${environment.Url}/role/${id}`);
   }
 }

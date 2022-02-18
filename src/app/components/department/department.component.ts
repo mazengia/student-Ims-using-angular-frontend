@@ -1,182 +1,143 @@
-import {AfterContentChecked, Component, OnInit} from '@angular/core';
+import {AfterContentChecked, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DepartmentService} from '../../services/department.service';
 import {Department} from '../../model/department';
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
+import {CreateUpdateDepartmentComponent} from "./create-update-department/create-update-department.component";
 
 @Component({
   selector: 'app-department',
   templateUrl: './department.component.html',
   styleUrls: ['./department.component.scss']
 })
-export class DepartmentComponent  implements OnInit, AfterContentChecked {
-  constructor(private fb: FormBuilder, private departmentService: DepartmentService) {
-    this.departmentForm = this.fb.group({
-      name: ['', [Validators.required, Validators.required]],
-      code: ['', [Validators.required, Validators.required]]
-    });
-    this.deleteForm = this.fb.group({
-      id: ['', [Validators.required, Validators.required]]
-    });
-    this.editForm = this.fb.group({
-      name: ['', [Validators.required, Validators.required]],
-      code: ['', [Validators.required, Validators.required]]
-    });
-  }
-  searchValue = '';
-  visible = false;
-  visibleDrawer = false;
-  isModalVisible = false;
-  isConfirmLoading = false;
-
-  editObject:any
-  successMessage:any;
-  errorMessage:any;
-  allUserData: any;
-  listOfDepartmentData: any; // @ts-ignore
-
-  listOfData: DataItem[] = [];
-  departmentForm: FormGroup;
-  deleteForm : FormGroup;
-  editForm : FormGroup;
-  id : FormControl;
-
+export class DepartmentComponent  implements OnInit {
+  @ViewChild(
+    'drawerTemplate',
+    {static: false})
+  drawerTemplate?: TemplateRef<{
+    $implicit: { value: string };
+    drawerRef: NzDrawerRef<string>;
+  }>;
   pageSize = 10;
   pageNumber = 1;
   totalElements = 0;
-  department:Department[] = [];
-  visibleEditDrawer = false;
+  searchValue = '';
+  visible = false;
+  isDataFound = false;
+  // @ts-ignore
+  listOfData: DataItem[] = [];
+  departments: Department[] = [];
+  listOfDepartmentData: any;
 
-  ngOnInit(): void {
-    this.loadDepartments(true);
-    this.id = new FormControl();
-    this.deleteForm =    new FormGroup({
-      id: this.id });
+  constructor(
+    private notification: NzNotificationService,
+    private departmentService: DepartmentService,
+    private drawerService: NzDrawerService,
+  ) {
   }
 
-  loadDepartments( reset: boolean = false) {
+  ngOnInit(): void {
+    this.loadDepartments();
+  }
+
+
+  openDrawer(id: number): void {
+    const drawerRef = this.drawerService.create<CreateUpdateDepartmentComponent,
+      { id: number }>({
+      nzTitle: `${id ? 'Update' : 'Create'} Department`,
+      nzContent: CreateUpdateDepartmentComponent,
+      nzContentParams: {
+        value: id,
+      },
+      nzClosable: true,
+      nzKeyboard: true,
+    });
+
+    drawerRef.afterClose.subscribe(() => {
+      this.loadDepartments()
+    })
+  }
+
+  cancel(): void {
+    // this.nzMessageService.info('click cancel');
+  }
+
+  loadDepartments(reset: boolean = false) {
     if (reset) {
       this.pageNumber = 1;
     }
-    this.departmentService.getDepartment(this.pageNumber - 1, this.pageSize)
-      .subscribe(res => {
-          // console.log(this.listOfDepartmentData)
-          this.listOfDepartmentData = res._embedded ;
-          // this.listOfDepartmentData = res._embedded;
-          this.totalElements = res.page.totalElements;
-
-
+    this.departmentService.getDepartment(this.pageNumber - 1, this.pageSize).subscribe(
+      res => {
+        // console.log(res)
+         this.departments = res._embedded.departmentDTOList;
+        this.totalElements = res.page.totalElements;
+        this.filterDepartments();
+        this.isDataFound=true;
       },
-        error => {
-          console.log('error=', error);
-        })
-
-  }
-  open(): void {
-    this.visibleDrawer = true;
-  }
-  close(): void {
-    this.visibleDrawer = false;
-  }
-
-
-  // forms inside drawer
-
-  saveDepartment(): void {
-    for (const key in this.departmentForm.controls) {
-      if (this.departmentForm.controls.hasOwnProperty(key)) {
-        this.departmentForm.controls[key].markAsDirty();
-        this.departmentForm.controls[key].updateValueAndValidity();
+      error => {
+        console.log("error = ",error)
+        this.isDataFound=false;
       }
+    )
+
+  }
+
+  searchDepartments(): void {
+    this.visible = false;
+    this.departments = this.listOfData.filter(
+      (item: Department) => item.name.indexOf(this.searchValue) !== -1);
+  }
+
+  filterDepartments() {
+    for (const item of this.departments) {
+      const variable = {
+        id: item.id,
+        name: item.name
+      }
+      this.listOfData.push(variable);
+      this.listOfDepartmentData = [...this.listOfData];
     }
-    this.departmentService.addDepartment(this.departmentForm.value).subscribe(
-      data=>{
-        this.successMessage=data+' is added successfully';
+  }
+
+  resetBusiness(): void {
+    this.searchValue = '';
+    this.searchDepartments();
+  }
+
+  deleteDepartment(id?: number) {
+    this.departmentService.deleteDepartment(id).subscribe(
+      (data) => {
+        this.loadDepartments();
+        this.createNotification(
+          'success',
+          'Department',
+          'Department Successfully Deleted'
+        );
       },
-      error=> {
-        this.errorMessage= error
+      (error) => {
+        console.log(error)
+        this.createNotification(
+          'error',
+          'Error',
+          error.error.message
+        );
       }
     )
   }
 
-  resetForm(e: MouseEvent): void {
-    e.preventDefault();
-    this.departmentForm.reset();
-    for (const key in this.departmentForm.controls) {
-      if (this.departmentForm.controls.hasOwnProperty(key)) {
-        this.departmentForm.controls[key].markAsPristine();
-        this.departmentForm.controls[key].updateValueAndValidity();
-      }
-    }
-  }
-
-  ngAfterContentChecked(): void {
+  createNotification(type: string, title: string, message: string): void {
+    this.notification.create(type, title, message);
   }
 
   reset(): void {
     this.searchValue = '';
     this.search();
   }
-
   search(): void {
     this.visible = false;
-    // @ts-ignore
-    this.listOfDepartmentData = this.listOfData.filter((item: DataItem) => item.name.indexOf(this.searchValue) !== -1);
-  }
-
-  editDrawer(id:number): void {
-    this.visibleEditDrawer = true;
-    console.log('edited id=',id)
-    this.departmentService.findDepartmentById(id).subscribe(
-      res => {
-      console.log(res)
-      this.editObject=res;
-      console.log(res)
-    },
-      error => {
-        console.log('error=', error);
-      })
-
-  }
-
-  closeEditDrawer(): void {
-    this.visibleEditDrawer = false;
-  }
-
-  UpdateForm(value: { name: string, code:string}): void {
-    console.log('value=',value)
-    console.log('id=',this.editObject.id)
-    for (const key in this.editForm.controls) {
-      if (this.editForm.controls.hasOwnProperty(key)) {
-        this.editForm.controls[key].markAsDirty();
-        this.editForm.controls[key].updateValueAndValidity();
-      }
-    }
-    this.departmentService.updateDepartment(this.editObject.id,value).subscribe(
-      data=>{
-        this.successMessage='name whose id'+this.editObject.id+' is updated successfully';
-        window.location.reload()
-      },
-      error=> {
-        this.errorMessage= error
-      }
-    )
-  }
-
-  confirm(id:number) {
-    console.log('id=',id)
-    this.departmentService.deleteDepartment(id).subscribe(
-      data=>{
-        this.successMessage=data+' is added successfully';
-
-      },
-      error=> {
-        this.errorMessage= error
-      }
-    )
-  }
-
-  cancel() {
-
+    this.departments = this.listOfData.filter(
+      (item: Department) => item.name.indexOf(this.searchValue) !== -1
+    );
   }
 }
-

@@ -14,6 +14,7 @@ import {NzMenuModule} from "ng-zorro-antd/menu";
 import {NzIconModule} from "ng-zorro-antd/icon";
 import {en_US, NZ_I18N, zh_CN} from "ng-zorro-antd/i18n";
 import {MainAppModule} from "./components/main-app/main-app.module";
+import {authInterceptorProviders} from "./config/auth.interceptor";
 registerLocaleData(zh);
 
 @NgModule({
@@ -34,7 +35,11 @@ registerLocaleData(zh);
     NzMenuModule,
     NzToolTipModule
   ],
-  providers: [{ provide: NZ_I18N, useValue: en_US }],
+  providers: [
+    { provide: NZ_I18N, useValue: en_US },
+    authInterceptorProviders
+  ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

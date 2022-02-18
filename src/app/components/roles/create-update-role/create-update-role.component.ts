@@ -68,7 +68,7 @@ export class CreateUpdateRoleComponent implements OnInit {
           this.createNotification(
             'error',
             'Error',
-            error.apierror.debugMessage);
+            error.error.message);
         }
       );
   }

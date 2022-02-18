@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {TokenStorageService} from "../../config/_services/token-storage.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-main-app',
@@ -9,29 +10,29 @@ import {TokenStorageService} from "../../config/_services/token-storage.service"
 export class MainAppComponent implements OnInit{
   title = 'Student Information Management system';
   isCollapsed = false;
-  private roles: string[] = [];
+  roles: string[] = [];
   isLoggedIn = false;
-  showAdminBoard = false;
-  showUserBoard = false;
   username?: string;
-  constructor(private tokenStorageService: TokenStorageService) { }
+  role:string;
+  constructor(
+    private tokenStorageService: TokenStorageService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,) {
+    this.role = String(activatedRoute.snapshot.paramMap.get("roles"));
+  }
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
-
     if (this.isLoggedIn) {
       const user = this.tokenStorageService.getUser();
       this.roles = user.roles;
-
-      this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
-      this.showUserBoard = this.roles.includes('ROLE_USER');
-
       this.username = user.username;
     }
   }
 
   logout(): void {
     this.tokenStorageService.signOut();
-    window.location.reload();
+    this.router.navigate(['/']);
+
   }
 }

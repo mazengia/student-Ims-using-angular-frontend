@@ -75,21 +75,22 @@
     <nz-header>
       <div class="app-header">
         <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-            <i class="trigger"  nz-icon    [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+            <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
         </span>
         <span class="user-name">
           <a nz-dropdown [nzDropdownMenu]="menu">
-<!--      {{authenticatedUserName}}-->
+      {{username}}({{roles}})
       <i nz-icon nzType="down"></i>
     </a>
-    <nz-dropdown-menu #menu="nzDropdownMenu">
+    <nz-dropdown-menu  style="margin-top: 40px" #menu="nzDropdownMenu">
       <ul nz-menu nzSelectable>
       <li nzicon="logout" class="ant-menu-submenu ant-menu-submenu-vertical">
-        <div   class="ant-menu-submenu-title">
+        <div class="ant-menu-submenu-title">
           <i nz-icon nzType="logout" nzTheme="outline"></i>
-          <!--          <span class="ng-star-inserted" (click)="logout()">Logout</span>-->
-           <span class="ng-star-inserted" >Logout</span>
-      </div>
+              <span class="ng-star-inserted" (click)="logout()">
+                Logout
+              </span>
+     </div>
       </li>
       </ul>
     </nz-dropdown-menu>

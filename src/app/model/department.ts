@@ -1,4 +1,5 @@
  import {page} from './Page';
+ import {Roles} from "./Roles";
 
 export class Department{
   id	  :string;
@@ -7,6 +8,8 @@ export class Department{
 
 }
 export  class DepartmentResponse{
-  _embedded: Department;
+  _embedded: {
+    departmentDTOList: Department[];
+  };
   page:page;
 }

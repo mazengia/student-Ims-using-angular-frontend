@@ -1,5 +1,5 @@
-import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
- import {RolesService} from '../../services/roles.service';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {RolesService} from '../../services/roles.service';
 import {Roles} from '../../model/Roles';
 import {NzDrawerRef, NzDrawerService} from 'ng-zorro-antd/drawer';
 import {NzNotificationService} from 'ng-zorro-antd/notification';
@@ -23,7 +23,7 @@ export class RolesComponent implements OnInit {
   totalElements = 0;
   searchValue = '';
   visible = false;
-  isDataFound = false;
+  loading= true;
   // @ts-ignore
   listOfData: DataItem[] = [];
   roles: Roles[] = [];
@@ -66,18 +66,18 @@ export class RolesComponent implements OnInit {
     if (reset) {
       this.pageNumber = 1;
     }
+    this.loading = true;
     this.rolesService.getRoles(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
-        console.log(res)
+        this.loading = false;
         this.roles = res._embedded.rolesDTOList;
         this.totalElements = res.page.totalElements;
         this.filterRoles();
-        this.isDataFound=true;
       },
       error => {
-        this.isDataFound=false;
+        console.log("error = ", error)
       }
-      )
+    )
 
   }
 
@@ -118,7 +118,7 @@ export class RolesComponent implements OnInit {
         this.createNotification(
           'error',
           'Error',
-          error.message
+          error.error.message
         );
       }
     )
@@ -132,6 +132,7 @@ export class RolesComponent implements OnInit {
     this.searchValue = '';
     this.search();
   }
+
   search(): void {
     this.visible = false;
     this.roles = this.listOfData.filter(

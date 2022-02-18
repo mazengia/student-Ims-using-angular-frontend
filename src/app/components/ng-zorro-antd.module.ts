@@ -135,6 +135,9 @@ import {NzWaveModule} from "ng-zorro-antd/core/wave";
     NzUploadModule,
     NzWaveModule,
     NzResizableModule
+  ],
+  declarations: [
+
   ]
 })
 export class NgZorroAntdModule {}
