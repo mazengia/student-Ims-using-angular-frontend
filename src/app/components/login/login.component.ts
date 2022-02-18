@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     if (this.validateForm.status === 'INVALID') {
-      this.message.create('warning', 'warning');
+      this.message.create('warning', 'warning Empty Field Is Not Allowed');
       return;
     }
 

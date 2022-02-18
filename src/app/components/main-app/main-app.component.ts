@@ -28,6 +28,9 @@ export class MainAppComponent implements OnInit{
       this.roles = user.roles;
       this.username = user.username;
     }
+    else{
+      this.router.navigate(['/login']);
+    }
   }
 
   logout(): void {
