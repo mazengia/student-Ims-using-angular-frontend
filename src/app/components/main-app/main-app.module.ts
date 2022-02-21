@@ -29,6 +29,8 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {CreateUpdateDepartmentComponent} from "../department/create-update-department/create-update-department.component";
+import {NzSpinModule} from "ng-zorro-antd/spin";
+import {CreateUpdateStatusComponent} from "../status/create-update-status/create-update-status.component";
 
 
 @NgModule({
@@ -47,24 +49,26 @@ import {CreateUpdateDepartmentComponent} from "../department/create-update-depar
     RolesComponent,
     CreateUpdateRoleComponent,
     StatusComponent,
+    CreateUpdateStatusComponent
   ],
-  imports: [
-    CommonModule,
-    MainAppRoutingModule,
-    NzLayoutModule,
-    NzDropDownModule,
-    NzIconModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NzCardModule,
-    NzTableModule,
-    NzButtonModule,
-    NzFormModule,
-    NzPopconfirmModule,
-    NzToolTipModule,
-    NzDrawerModule,
-    NzInputModule,
-    NzSelectModule
-  ]
+    imports: [
+        CommonModule,
+        MainAppRoutingModule,
+        NzLayoutModule,
+        NzDropDownModule,
+        NzIconModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NzCardModule,
+        NzTableModule,
+        NzButtonModule,
+        NzFormModule,
+        NzPopconfirmModule,
+        NzToolTipModule,
+        NzDrawerModule,
+        NzInputModule,
+        NzSelectModule,
+        NzSpinModule
+    ]
 })
 export class MainAppModule { }

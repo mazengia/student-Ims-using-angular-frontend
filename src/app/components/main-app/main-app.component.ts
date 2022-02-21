@@ -29,13 +29,13 @@ export class MainAppComponent implements OnInit{
       this.username = user.username;
     }
     else{
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']).then(r => {});
     }
   }
 
   logout(): void {
     this.tokenStorageService.signOut();
-    this.router.navigate(['/']);
+    this.router.navigate(['/']).then(r => {});
 
   }
 }

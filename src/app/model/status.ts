@@ -1,8 +1,13 @@
+import {page} from './Page';
+
 export class Status{
   id?: number;
   name: string;
 }
 export class StatusResponse {
-  content: Status[];
+  _embedded: {
+    statusDTOList: Status[];
+  };
+  page:page;
 }
 

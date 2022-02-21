@@ -1,7 +1,9 @@
-import {AfterContentChecked, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {StatusService} from '../../services/status.service';
-import {Status} from '../../model/status';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {Status} from "../../model/status";
+import {StatusService} from "../../services/status.service";
+import {CreateUpdateStatusComponent} from "./create-update-status/create-update-status.component";
 
 @Component({
   selector: 'app-status',
@@ -9,100 +11,123 @@ import {Status} from '../../model/status';
   styleUrls: ['./status.component.scss']
 })
 
-export class StatusComponent  implements OnInit, AfterContentChecked {
-  constructor(private fb: FormBuilder, private statusService: StatusService) {
-    this.statusForm = this.fb.group({
-      name: ['', [Validators.required, Validators.required]]
-    });
-    this.deleteForm = this.fb.group({
-      id: ['', [Validators.required, Validators.required]]
-    });
-    this.editForm = this.fb.group({
-      name: ['', [Validators.required, Validators.required]]
-    });
-  }
+export class StatusComponent implements OnInit {
+  @ViewChild(
+    'drawerTemplate',
+    {static: false})
+  drawerTemplate?: TemplateRef<{
+    $implicit: { value: string };
+    drawerRef: NzDrawerRef<string>;
+  }>;
+  pageSize = 10;
+  pageNumber = 1;
+  totalElements = 0;
   searchValue = '';
   visible = false;
-  visibleDrawer = false;
-  isModalVisible = false;
-  isConfirmLoading = false;
-
-  editObject:any
-  successMessage:any;
-  errorMessage:any;
-  allUserData: any;
-  listOfStatusData: any; // @ts-ignore
-
+  loading = true;
+  // @ts-ignore
   listOfData: DataItem[] = [];
-  statusForm: FormGroup;
-  deleteForm : FormGroup;
-  editForm : FormGroup;
-  id : FormControl;
+  statuses: Status[] = [];
+  listOfStatusData: any;
 
-  status:Status[] = [];
-
-
-
-  // edit drawer
-  visibleEditDrawer = false;
+  constructor(
+    private notification: NzNotificationService,
+    private statusService: StatusService,
+    private drawerService: NzDrawerService,
+  ) {
+  }
 
   ngOnInit(): void {
-    this.loadRoles(true);
-    this.id = new FormControl();
-    this.deleteForm =    new FormGroup({
-      id: this.id });
-  }
-
-  loadRoles(reset:boolean = false)
-  {
-    this.statusService.getStatus()
-      .subscribe(res =>
-      {
-          this.listOfStatusData = res;
-console.log("status = ",res)
-      })
-
-  }
-  open(): void {
-    this.visibleDrawer = true;
-  }
-  close(): void {
-    this.visibleDrawer = false;
+    this.loadStatus();
   }
 
 
-  // forms inside drawer
-
-  saveStatus(value: { name: string }): void {
-    console.log('value=',value)
-    for (const key in this.statusForm.controls) {
-      if (this.statusForm.controls.hasOwnProperty(key)) {
-        this.statusForm.controls[key].markAsDirty();
-        this.statusForm.controls[key].updateValueAndValidity();
-      }
-    }
-    this.statusService.addStatus(value).subscribe(
-      data=>{
-        this.successMessage=data+' is added successfully';
+  openDrawer(id: number): void {
+    const drawerRef = this.drawerService.create<CreateUpdateStatusComponent,
+      { id: number }>({
+      nzTitle: `${id ? 'Update' : 'Create'} Status`,
+      nzContent: CreateUpdateStatusComponent,
+      nzContentParams: {
+        value: id,
       },
-      error=> {
-        this.errorMessage= error
+      nzClosable: true,
+      nzKeyboard: true,
+    });
+
+    drawerRef.afterClose.subscribe(() => {
+      this.loadStatus()
+    })
+  }
+
+  cancel(): void {
+    // this.nzMessageService.info('click cancel');
+  }
+
+  loadStatus(reset: boolean = false) {
+    if (reset) {
+      this.pageNumber = 1;
+    }
+    this.loading = true;
+    this.statusService.getStatus(this.pageNumber - 1, this.pageSize).subscribe(
+      res => {
+        console.log(res)
+        this.loading = false;
+        this.statuses = res._embedded.statusDTOList;
+        this.totalElements = res.page.totalElements;
+        this.filterStatus();
+      },
+      error => {
+        console.log("error = ", error)
+      }
+    )
+
+  }
+
+  searchStatus(): void {
+    this.visible = false;
+    this.statuses = this.listOfData.filter(
+      (item: Status) => item.name.indexOf(this.searchValue) !== -1);
+  }
+
+  filterStatus() {
+    for (const item of this.statuses) {
+      const variable = {
+        id: item.id,
+        name: item.name
+      }
+      this.listOfData.push(variable);
+      this.listOfStatusData = [...this.listOfData];
+    }
+  }
+
+  resetBusiness(): void {
+    this.searchValue = '';
+    this.searchStatus();
+  }
+
+  deleteStatus(id?: number) {
+    this.statusService.deleteStatus(id).subscribe(
+      (data) => {
+        this.loadStatus();
+        this.createNotification(
+          'success',
+          'Status',
+          'Status Successfully Deleted'
+        );
+      },
+      (error) => {
+        console.log(error)
+        this.createNotification(
+          'error',
+          'Error',
+          error.error.message
+        );
       }
     )
   }
 
-  resetForm(e: MouseEvent): void {
-    e.preventDefault();
-    this.statusForm.reset();
-    for (const key in this.statusForm.controls) {
-      if (this.statusForm.controls.hasOwnProperty(key)) {
-        this.statusForm.controls[key].markAsPristine();
-        this.statusForm.controls[key].updateValueAndValidity();
-      }
-    }
-  }
-
-  ngAfterContentChecked(): void {
+  createNotification(type: string, title: string, message: string): void {
+    this.notification.create(type, title, message);
   }
 
   reset(): void {
@@ -112,56 +137,8 @@ console.log("status = ",res)
 
   search(): void {
     this.visible = false;
-    // @ts-ignore
-    this.listOfStatusData = this.listOfData.filter((item: DataItem) => item.name.indexOf(this.searchValue) !== -1);
-  }
-
-  editDrawer(id:number): void {
-    this.visibleEditDrawer = true;
-    this.statusService.findStatusById(id).subscribe(res =>
-    {
-      this.editObject=res;
-    })
-
-  }
-
-  closeEditDrawer(): void {
-    this.visibleEditDrawer = false;
-  }
-
-  UpdateForm(value: { name: string}): void {
-    console.log('id=',this.editObject.id)
-    for (const key in this.editForm.controls) {
-      if (this.editForm.controls.hasOwnProperty(key)) {
-        this.editForm.controls[key].markAsDirty();
-        this.editForm.controls[key].updateValueAndValidity();
-      }
-    }
-    this.statusService.updateStatus(this.editObject.id,value).subscribe(
-      data=>{
-        this.successMessage='name whose id'+this.editObject.id+' is updated successfully';
-        window.location.reload()
-      },
-      error=> {
-        this.errorMessage= error
-      }
-    )
-  }
-
-  confirm(id:number) {
-    console.log('id=',id)
-    this.statusService.deleteStatus(id).subscribe(
-      data=>{
-        this.successMessage=data+' is added successfully';
-
-      },
-      error=> {
-        this.errorMessage= error
-      }
-    )
-  }
-
-  cancel() {
-
+    this.statuses = this.listOfData.filter(
+      (item: Status) => item.name.indexOf(this.searchValue) !== -1
+    );
   }
 }
