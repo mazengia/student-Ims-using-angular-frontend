@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {environment} from '../../environments/environment';
-import {DepartmentResponse} from '../model/department';
+import {Department, DepartmentResponse} from '../model/department';
 import {catchError} from 'rxjs/operators';
 
 @Injectable({
@@ -21,16 +21,16 @@ export class DepartmentService {
     return this.http.get<DepartmentResponse>(`${environment.Url}/department`, {params} ).pipe( catchError( this.errorHandler));
   }
 
-  addDepartment(inputName:any):Observable<any>
+  addDepartment(data:Department):Observable<Department>
   {
-    return this.http.post(`${environment.Url}/department`,inputName ,{ responseType: 'text' }  );
+    return this.http.post<Department>(`${environment.Url}/department`,data );
   }
-  deleteDepartment(id:number):Observable<any>
+  deleteDepartment(departmentId:number):Observable<Department>
   {
-    return this.http.post(`${environment.Url}/department/${id}` ,{ responseType: 'text' }  );
+    return this.http.delete<Department>(`${environment.Url}/department/${departmentId}`  );
   }
-  updateDepartment(id: number, value: any): Observable<any> {
-    return this.http.put(`${environment.Url}department/${id}`, value,{ responseType: 'text' });
+  updateDepartment(departmentId: number, value: any): Observable<any> {
+    return this.http.put<any>(`${environment.Url}/department/${departmentId}`, value );
   }
   findDepartmentById(id: number): Observable<any> {
     return this.http.get(`${environment.Url}/department/${id}` );

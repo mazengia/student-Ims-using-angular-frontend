@@ -1,59 +1,68 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DepartmentService} from "../../../services/department.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzDrawerRef} from "ng-zorro-antd/drawer";
 import {finalize, first} from "rxjs/operators";
+import {CourseService} from "../../../services/course.service";
+import {Department} from "../../../model/department";
+import {DepartmentService} from "../../../services/department.service";
 
 @Component({
-  selector: 'app-create-update-department',
-  templateUrl: './create-update-department.component.html',
-  styleUrls: ['./create-update-department.component.sass']
+  selector: 'app-create-update-course',
+  templateUrl: './create-update-course.component.html',
+  styleUrls: ['./create-update-course.component.sass']
 })
-export class CreateUpdateDepartmentComponent implements OnInit {
+export class CreateUpdateCourseComponent implements OnInit {
   isAddMode = true;
   loading = false;
   submitted = false;
+  departments: Department[] = [] ;
   @Input() value: number;
-  departmentForm: FormGroup;
+  courseForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
+    private courseService: CourseService,
     private departmentService: DepartmentService,
     private notification: NzNotificationService,
     private drawerRef: NzDrawerRef<string>
   ) {
-    this.departmentForm = this.fb.group({
+    this.courseForm = this.fb.group({
       name: ['', [Validators.required]],
-      code: ['', [Validators.required]]
+      code: ['', [Validators.required]],
+      creditHour: ['', [Validators.required]],
+      ects: ['', [Validators.required]],
+      department:this.fb.group({
+        id: ['', [Validators.required]],
+      })
     });
   }
 
   ngOnInit(): void {
     this.isAddMode = !this.value;
     if (this.value) {
-      this.loadDepartmentById();
+      this.loadCourseById();
     }
+    this.loadDepartments();
   }
 
   onSubmit() {
     this.submitted = true;
-    if (this.departmentForm.invalid) {
+    if (this.courseForm.invalid) {
       return;
     }
 
     this.loading = true;
     if (this.isAddMode) {
-      this.saveDepartment();
+      this.saveCourse();
     } else {
-      this.updateDepartment();
+      this.updateCourse();
     }
   }
 
-  saveDepartment(): void {
+  saveCourse(): void {
     this.resetForm();
-    console.log("post dept=",this.departmentForm.value)
-    this.departmentService.addDepartment(this.departmentForm.value)
+    this.courseService.addCourse(this.courseForm.value)
       .pipe(finalize(() => {
         this.drawerRef.close()
       }))
@@ -61,8 +70,8 @@ export class CreateUpdateDepartmentComponent implements OnInit {
         (data) => {
           this.createNotification(
             'success',
-            'Department',
-            'Department Successfully Created'
+            'Course',
+            'Course Successfully Created'
           );
         },
         (error) => {
@@ -75,37 +84,46 @@ export class CreateUpdateDepartmentComponent implements OnInit {
       );
   }
 
+  loadDepartments() {
+    this.departmentService.getDepartment().subscribe(
+      res => {
+        this.departments = res._embedded.departmentDTOList;
+      }
+    )
+
+  }
+
   resetForm(): void {
-    for (const key in this.departmentForm.controls) {
-      if (this.departmentForm.controls.hasOwnProperty(key)) {
-        this.departmentForm.controls[key].markAsDirty();
-        this.departmentForm.controls[key].updateValueAndValidity();
+    for (const key in this.courseForm.controls) {
+      if (this.courseForm.controls.hasOwnProperty(key)) {
+        this.courseForm.controls[key].markAsDirty();
+        this.courseForm.controls[key].updateValueAndValidity();
       }
     }
   }
 
-  private loadDepartmentById() {
-    this.departmentService
-      .findDepartmentById(this.value)
+  private loadCourseById() {
+    this.courseService
+      .findCourseById(this.value)
       .pipe(first())
       .subscribe((res) => {
         if (!this.isAddMode) {
-          this.departmentForm.patchValue(res);
+          this.courseForm.patchValue(res);
         }
       });
   }
 
-  updateDepartment(): void {
+  updateCourse(): void {
 
     this.resetForm();
-    this.departmentService
-      .updateDepartment(this.value, this.departmentForm.value)
+    this.courseService
+      .updateCourse(this.value, this.courseForm.value)
       .subscribe(
         data => {
           this.createNotification(
             'success',
-            'Department',
-            'Department Successfully Updated'
+            'Course',
+            'Course Successfully Updated'
           );
         },
         error => {

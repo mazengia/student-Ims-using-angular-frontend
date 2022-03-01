@@ -1,8 +1,13 @@
+import {page} from './Page';
+
 export class Program{
   id?: number;
   name: string;
 }
 export class ProgramResponse {
-  content: Program[];
+  _embedded: {
+    programDTOList: Program[];
+  };
+  page:page;
 }
 

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
+import {RolesResponse} from "../model/Roles";
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +11,13 @@ import {environment} from '../../environments/environment';
 export class DptService {
   constructor(private http:HttpClient) { }
 
-  getDpt( ):Observable<any>
-  {
-    return this.http.get (`${environment.Url}/department-program-type` ).pipe( catchError( this.errorHandler));
+  getDpt(pageNumber: number = 1, pageSize: number = 10 ):Observable<any>
+  {const params = new HttpParams()
+    .append('page', `${pageNumber}`)
+    .append('size', `${pageSize}`);
+    return this.http.get (`${environment.Url}/department-program-type`,{params} ).pipe( catchError( this.errorHandler));
   }
+
   addDpt(inputName:any):Observable<any>
   {
     return this.http.post(`${environment.Url}/department-program-type`,inputName ,{ responseType: 'text' }  ).pipe( catchError( this.errorHandler));

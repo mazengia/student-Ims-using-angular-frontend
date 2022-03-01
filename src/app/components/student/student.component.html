@@ -4,21 +4,19 @@
     <i nz-icon nzType="branches"></i>  student
   </ng-template>
   <ng-template #tabExtraTpl>
-    <button nz-button nzType="primary" (click)="open()" class="add-button"><i nz-icon nzType="plus"></i>Add Student</button>
+    <button nz-button nzType="primary" (click)="openDrawer(undefined)" class="add-button"><i nz-icon nzType="plus"></i>Add Student</button>
   </ng-template>
-  <nz-table #basicTable [nzData]="listOfStudentData"
-    nzSize="small"
-    [nzFrontPagination]="false"
-    [nzTotal]="totalElements"
-    [(nzPageIndex)]="pageNumber"
-    [(nzPageSize)]="pageSize"
-    nzShowPagination
-    nzShowSizeChanger
-    nzShowQuickJumper
-    (nzPageIndexChange)	="loadStudent()"
-    (nzPageSizeChange)="loadStudent(true)">
-
-
+  <nz-table #basicTable [nzData]="students"
+            nzSize="small"
+            [nzFrontPagination]="false"
+            [nzTotal]="totalElements"
+            [(nzPageIndex)]="pageNumber"
+            [(nzPageSize)]="pageSize"
+            nzShowPagination
+            nzShowSizeChanger
+            nzShowQuickJumper
+            (nzPageIndexChange)	="loadStudent()"
+            (nzPageSizeChange)="loadStudent(true)">
 
     <thead>
     <tr>
@@ -43,12 +41,12 @@
         <div  nz-row>
           <div   nz-col nzSpan="8"></div>
           <div   nz-col nzSpan="4">
-            <i class="edit-btn"    nz-icon nzType="edit"  (click)="editDrawer(data.id)"   nzTheme="outline" nz-tooltip="edit"></i>
+            <i class="edit-btn"    nz-icon nzType="edit"  (click)="openDrawer(data.id)"   nzTheme="outline" nz-tooltip="edit"></i>
           </div>
           <div   nz-col nzSpan="4">  </div>
           <div  nz-col nzSpan="4">
-            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this task?"
-               (nzOnConfirm)="confirm(data.id)" (nzOnCancel)="cancel()"  >
+            <a nz-popconfirm="" nzPopconfirmTitle="Are you sure delete this task?"
+               (nzOnConfirm)="deleteStudent(data.id)" (nzOnCancel)="cancel()"  >
               <i class="delete-button" nzTooltipColor="red"  nz-icon nzType="delete" nzTheme="outline"  nz-tooltip="delete"></i>
             </a>
           </div>
@@ -60,162 +58,6 @@
   </nz-table>
 </nz-card>
 
-<!--    add drawer-->
 
-<nz-drawer
-  [nzClosable]="true"
-  [nzVisible]="visibleDrawer"
-  nzPlacement="right"
-  nzWidth="25%"
-  nzTitle="Add new Student"
-  (nzOnClose)="close()">
-  <form *nzDrawerContent nz-form [formGroup]="addStudentForm" (ngSubmit)="saveStudent()">
-    <div *ngIf="successMessage">
-      <div class="row">
-        <div class="col-md-1 "></div>
-        <div class="col-md-10 alert alert-success">
-          <H4>{{successMessage}}</H4>
-        </div>
-        <div class="col-md-1"></div>
-      </div>
-    </div>
-    <div *ngIf="errorMessage">
-      <div class="row">
-        <div class="col-md-1 "></div>
-        <div class="col-md-10 alert alert-danger">
-          <H4>{{errorMessage}}</H4>
-        </div>
-        <div class="col-md-1"></div>
-      </div>
-    </div>
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>Firstname</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input formControlName="firstName"   />
-        <ng-template #userErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">Please input firstName!</ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>Lastname</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input formControlName="lastName"   />
-        <ng-template #userErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">Please input lastName!</ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>Username</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input formControlName="username"   />
-        <ng-template #userErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">Please input userName!</ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>Email</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input type="email" formControlName="email"   />
-        <ng-template #userErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">Please input email!</ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>Password</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input type="password" formControlName="password"   />
-        <ng-template #userErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">Please input password!</ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-<div formGroupName="dpt">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7"   nzRequired>Department</nz-form-label>
-      <nz-select   formControlName="id" nzPlaceHolder="Select department"  >
-        <nz-option *ngFor="let data of listOfDptData"    nzValue="{{data.id}}" nzLabel="{{data.department.name}} {{data.programs.name}} {{data.programType.name}}"></nz-option>
-      </nz-select>
-    </nz-form-item>
-</div>
-
-    <nz-form-item>
-      <nz-form-control [nzOffset]="7" [nzSpan]="18">
-        <button nz-button nzType="primary" [disabled]="!addStudentForm.valid">Submit</button>
-        <button style="margin-top: 10px" nz-button (click)="resetForm($event)">Reset</button>
-      </nz-form-control>
-    </nz-form-item>
-  </form>
-</nz-drawer>
-
-<!--    edit drawer-->
-
-<nz-drawer
-  [nzClosable]="true"
-  [nzVisible]="visibleEditDrawer"
-  nzWidth="25%"
-  nzPlacement="right"
-  nzTitle="Edit Student"
-  (nzOnClose)="close()" >
-
-  <form *nzDrawerContent  nz-form [formGroup]="editForm" (ngSubmit)="UpdateForm(editForm.value)">
-    <div *ngIf="successMessage">
-      <div class="row">
-        <div class="col-md-1 "></div>
-        <div class="col-md-10 alert alert-success">
-          <H4 style="color: green">{{successMessage}}</H4>
-        </div>
-        <div class="col-md-1"></div>
-      </div>
-    </div>
-    <div *ngIf="errorMessage">
-      <div class="row">
-        <div class="col-md-1 "></div>
-        <div class="col-md-10 alert alert-danger">
-          <H4>{{errorMessage}}</H4>
-        </div>
-        <div class="col-md-1"></div>
-      </div>
-    </div>
-
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>name</nz-form-label>
-      <nz-form-control [nzSpan]="18"    >
-        <input nz-input formControlName="firstName" ngModel="{{editObject.firstName }}"  />
-        <ng-template  let-control>
-          <ng-container *ngIf="control.hasError('required')">Please input department name!</ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-
-    <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>userName</nz-form-label>
-      <nz-form-control [nzSpan]="18"    >
-        <input nz-input formControlName="userName" ngModel="{{editObject.username }}"  />
-        <ng-template   let-control>
-          <ng-container *ngIf="control.hasError('required')">Please input department code!</ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-
-    <nz-form-item>
-      <nz-form-control [nzOffset]="7" [nzSpan]="18">
-        <button nz-button nzType="primary" >Submit</button>
-      </nz-form-control>
-    </nz-form-item>
-
-  </form>
-</nz-drawer>
-
-<!--    edit drawer-->
 
 

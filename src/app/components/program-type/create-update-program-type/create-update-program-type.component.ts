@@ -1,29 +1,29 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {NzDrawerRef} from 'ng-zorro-antd/drawer';
-import {NzNotificationService} from 'ng-zorro-antd/notification';
-import {RolesService} from '../../../services/roles.service';
-import {finalize, first} from 'rxjs/operators';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+ import {NzNotificationService} from "ng-zorro-antd/notification";
+import {NzDrawerRef} from "ng-zorro-antd/drawer";
+import {finalize, first} from "rxjs/operators";
+import {ProgramTypeService} from "../../../services/program-type.service";
 
 @Component({
-  selector: 'app-create-update-role',
-  templateUrl: './create-update-role.component.html',
-  styleUrls: ['./create-update-role.component.scss']
+  selector: 'app-create-update-program-type',
+  templateUrl: './create-update-program-type.component.html',
+  styleUrls: ['./create-update-program-type.component.sass']
 })
-export class CreateUpdateRoleComponent implements OnInit {
+export class CreateUpdateProgramTypeComponent implements OnInit {
   isAddMode = true;
   loading = false;
   submitted = false;
   @Input() value: number;
-  roleForm: FormGroup;
+  programsTypeForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private rolesService: RolesService,
+    private programService: ProgramTypeService,
     private notification: NzNotificationService,
     private drawerRef: NzDrawerRef<string>
   ) {
-    this.roleForm = this.fb.group({
+    this.programsTypeForm = this.fb.group({
       name: ['', [Validators.required]]
     });
   }
@@ -31,27 +31,27 @@ export class CreateUpdateRoleComponent implements OnInit {
   ngOnInit(): void {
     this.isAddMode = !this.value;
     if (this.value) {
-      this.loadRoleById();
+      this.loadProgramsById();
     }
   }
 
   onSubmit() {
     this.submitted = true;
-    if (this.roleForm.invalid) {
+    if (this.programsTypeForm.invalid) {
       return;
     }
 
     this.loading = true;
     if (this.isAddMode) {
-      this.saveRoles();
+      this.savePrograms();
     } else {
-      this.updateRoles();
+      this.updatePrograms();
     }
   }
 
-  saveRoles(): void {
+  savePrograms(): void {
     this.resetForm();
-    this.rolesService.addRoles(this.roleForm.value)
+    this.programService.addProgramType(this.programsTypeForm.value)
       .pipe(finalize(() => {
         this.drawerRef.close()
       }))
@@ -59,8 +59,8 @@ export class CreateUpdateRoleComponent implements OnInit {
         (data) => {
           this.createNotification(
             'success',
-            'Role',
-            'Role Successfully Created'
+            'programs type',
+            'programs type Successfully Created'
           );
         },
         (error) => {
@@ -74,36 +74,36 @@ export class CreateUpdateRoleComponent implements OnInit {
   }
 
   resetForm(): void {
-    for (const key in this.roleForm.controls) {
-      if (this.roleForm.controls.hasOwnProperty(key)) {
-        this.roleForm.controls[key].markAsDirty();
-        this.roleForm.controls[key].updateValueAndValidity();
+    for (const key in this.programsTypeForm.controls) {
+      if (this.programsTypeForm.controls.hasOwnProperty(key)) {
+        this.programsTypeForm.controls[key].markAsDirty();
+        this.programsTypeForm.controls[key].updateValueAndValidity();
       }
     }
   }
 
-  private loadRoleById() {
-    this.rolesService
-      .findRolesById(this.value)
+  private loadProgramsById() {
+    this.programService
+      .findProgramTypeById(this.value)
       .pipe(first())
       .subscribe((res) => {
         if (!this.isAddMode) {
-          this.roleForm.patchValue(res);
+          this.programsTypeForm.patchValue(res);
         }
       });
   }
 
-  updateRoles(): void {
+  updatePrograms(): void {
 
     this.resetForm();
-    this.rolesService
-      .updateRoles(this.value, this.roleForm.value)
+    this.programService
+      .updateProgramType(this.value, this.programsTypeForm.value)
       .subscribe(
         data => {
           this.createNotification(
             'success',
-            'Role',
-            'Role Successfully Updated'
+            'programs type',
+            'programs type Successfully Updated'
           );
         },
         error => {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ProgramResponse} from '../model/program';
 import {environment} from '../../environments/environment';
@@ -11,9 +11,12 @@ export class ProgramService {
 
   constructor(private http:HttpClient) { }
 
-  getPrograms( ):Observable<ProgramResponse>
+  getPrograms(pageNumber: number = 1, pageSize: number = 10 ):Observable<ProgramResponse>
   {
-    return this.http.get<ProgramResponse>(`${environment.Url}/programs` );
+    const params = new HttpParams()
+      .append('page', `${pageNumber}`)
+      .append('size', `${pageSize}`);
+    return this.http.get<ProgramResponse>(`${environment.Url}/programs`,{params} );
   }
   addProgram(inputName:any):Observable<any>
   {

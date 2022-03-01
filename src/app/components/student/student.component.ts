@@ -1,133 +1,135 @@
-import {AfterContentChecked, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {StudentService} from '../../services/student.service';
-import {DptService} from '../../services/dpt.service';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {Student} from "../../model/student";
+import {StudentService} from "../../services/student.service";
+import {CreateUpdateStudentComponent} from "./create-update-student/create-update-student.component";
 
 @Component({
   selector: 'app-student',
   templateUrl: './student.component.html',
   styleUrls: ['./student.component.scss']
 })
-export class StudentComponent implements OnInit, AfterContentChecked {
+export class StudentComponent implements OnInit {
+  @ViewChild(
+    'drawerTemplate',
+    {static: false})
+  drawerTemplate?: TemplateRef<{
+    $implicit: { value: string };
+    drawerRef: NzDrawerRef<string>;
+  }>;
+  pageSize = 10;
+  pageNumber = 1;
+  totalElements = 0;
   searchValue = '';
   visible = false;
-  visibleDrawer = false;
-  isModalVisible = false;
-  isConfirmLoading = false;
-
-  editObject: any
-  successMessage: any;
-  errorMessage: any;
-  allUserData: any;
-  listOfStudentData: any;
-  listOfDptData: any;// @ts-ignore
+  isDataFound = false;
+  // @ts-ignore
   listOfData: DataItem[] = [];
-  addStudentForm: FormGroup;
-  deleteForm: FormGroup;
-  editForm: FormGroup;
-  id: FormControl;
-  visibleEditDrawer = false;
+  students: Student[] = [];
+  listOfStudentData: any;
 
-  pageSize = 10;
-  pageNumber =1;
-  totalElements = 0;
-  constructor(private fb: FormBuilder, private studentService: StudentService, private dptService: DptService) {
-
-    this.addStudentForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      password: ['', Validators.required],
-      dpt: this.fb.group({
-        id: [null, [Validators.required]]
-      }),
-      email: ['', Validators.required],
-      username: ['', Validators.required]
-    });
-    this.deleteForm = this.fb.group({
-      id: ['', Validators.required]
-    });
-    this.editForm = this.fb.group({
-      firstName: ['', Validators.required],
-      userName: ['', Validators.required]
-    });
+  constructor(
+    private notification: NzNotificationService,
+    private studentService: StudentService,
+    private drawerService: NzDrawerService,
+  ) {
   }
 
   ngOnInit(): void {
-    this.loadDpt();
     this.loadStudent();
-    this.id = new FormControl();
-    this.deleteForm = new FormGroup({
-      id: this.id
+  }
+
+
+  openDrawer(id: number): void {
+    const drawerRef = this.drawerService.create<CreateUpdateStudentComponent,
+      { id: number }>({
+      nzTitle: `${id ? 'Update' : 'Create'} Student`,
+      nzWidth:400,
+      nzContent: CreateUpdateStudentComponent,
+      nzContentParams: {
+        value: id,
+      },
+      nzClosable: true,
+      nzKeyboard: true,
     });
+
+    drawerRef.afterClose.subscribe(() => {
+      this.loadStudent()
+    })
+  }
+
+  cancel(): void {
+    // this.nzMessageService.info('click cancel');
   }
 
   loadStudent(reset: boolean = false) {
     if (reset) {
-    this.pageNumber = 1;
-  }
-    this.studentService.getStudent(this.pageNumber - 1, this.pageSize)
-      .subscribe(res => {
-          this.listOfStudentData = res.content
-          console.log('res = ', res)
-        },
-        error => {
-          console.log('error=', error);
-        })
-  }
-
-  loadDpt() {
-    this.dptService.getDpt()
-      .subscribe(res => {
-          this.listOfDptData = res;
-        },
-        error => {
-          console.log('error=', error);
-        })
-  }
-
-  open(): void {
-    this.visibleDrawer = true;
-  }
-
-  close(): void {
-    this.visibleDrawer = false;
-    this.visibleEditDrawer = false;
-  }
-
-
-  // forms inside drawer
-
-  saveStudent(): void {
-    for (const key in this.addStudentForm.controls) {
-      if (this.addStudentForm.controls.hasOwnProperty(key)) {
-        this.addStudentForm.controls[key].markAsDirty();
-        this.addStudentForm.controls[key].updateValueAndValidity();
-      }
+      this.pageNumber = 1;
     }
-    console.log(this.addStudentForm.value)
-    this.studentService.addStudent(this.addStudentForm.value).subscribe(
-      data => {
-        console.log(data);
-        this.successMessage = data + ' is added successfully';
+    this.studentService.getStudent(this.pageNumber - 1, this.pageSize).subscribe(
+      res => {
+        // console.log(res)
+        this.students = res._embedded.studentDTOList;
+        this.totalElements = res.page.totalElements;
+        this.filterStudent();
+        this.isDataFound = true;
       },
       error => {
-        this.errorMessage = error
+        console.log("error = ", error)
+        this.isDataFound = false;
+      }
+    )
+
+  }
+
+  searchStudents(): void {
+    this.visible = false;
+    this.students = this.listOfData.filter(
+      (item: Student) => item.username.indexOf(this.searchValue) !== -1);
+  }
+
+  filterStudent() {
+    for (const item of this.students) {
+      const variable = {
+        id: item.id,
+        firstName: item.firstName,
+        lastName: item.lastName,
+        username: item.username
+      }
+      this.listOfData.push(variable);
+      this.listOfStudentData = [...this.listOfData];
+    }
+  }
+
+  resetBusiness(): void {
+    this.searchValue = '';
+    this.searchStudents();
+  }
+
+  deleteStudent(id?: number) {
+    this.studentService.deleteStudent(id).subscribe(
+      (data) => {
+        this.loadStudent();
+        this.createNotification(
+          'success',
+          'Student',
+          'Student Successfully Deleted'
+        );
+      },
+      (error) => {
+        console.log(error)
+        this.createNotification(
+          'error',
+          'Error',
+          error.error.message
+        );
       }
     )
   }
 
-  resetForm(e: MouseEvent): void {
-    e.preventDefault();
-    this.addStudentForm.reset();
-    for (const key in this.addStudentForm.controls) {
-      if (this.addStudentForm.controls.hasOwnProperty(key)) {
-        this.addStudentForm.controls[key].markAsPristine();
-        this.addStudentForm.controls[key].updateValueAndValidity();
-      }
-    }
-  }
-
-  ngAfterContentChecked(): void {
+  createNotification(type: string, title: string, message: string): void {
+    this.notification.create(type, title, message);
   }
 
   reset(): void {
@@ -137,60 +139,8 @@ export class StudentComponent implements OnInit, AfterContentChecked {
 
   search(): void {
     this.visible = false;
-    // @ts-ignore
-    this.listOfStudentData = this.listOfData.filter((item: DataItem) => item.name.indexOf(this.searchValue) !== -1);
-  }
-
-  editDrawer(id: number): void {
-    this.visibleEditDrawer = true;
-    console.log('edited id=', id)
-    this.studentService.findStudentById(id).subscribe(
-      res => {
-        this.editObject = res ;
-        console.log("edit by Id",res)
-      },
-      error => {
-        console.log('error=', error);
-      })
-
-  }
-
-
-  UpdateForm(value: { firstName: string, userName: string }): void {
-    console.log('value=', value)
-    console.log('id=', this.editObject.id)
-    for (const key in this.editForm.controls) {
-      if (this.editForm.controls.hasOwnProperty(key)) {
-        this.editForm.controls[key].markAsDirty();
-        this.editForm.controls[key].updateValueAndValidity();
-      }
-    }
-    this.studentService.updateStudent(this.editObject.id, value).subscribe(
-      data => {
-        this.successMessage = 'name whose id' + this.editObject.id + ' is updated successfully';
-        window.location.reload()
-      },
-      error => {
-        this.errorMessage = error
-      }
-    )
-  }
-
-  confirm(id: number) {
-    console.log('id=', id)
-    this.studentService.deleteStudent(id).subscribe(
-      data => {
-        this.successMessage = data + ' is added successfully';
-
-      },
-      error => {
-        this.errorMessage = error
-      }
-    )
-  }
-
-  cancel() {
-
+    this.students = this.listOfData.filter(
+      (item: Student) => item.username.indexOf(this.searchValue) !== -1
+    );
   }
 }
-

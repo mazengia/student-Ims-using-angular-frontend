@@ -1,7 +1,6 @@
 import {AfterContentChecked, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {StudentService} from '../../services/student.service';
-import {DptService} from '../../services/dpt.service';
 import {EnrolStudentService} from '../../services/enrolStudent.service';
 
 @Component({
@@ -79,8 +78,8 @@ export class StudentEnrolComponent implements OnInit, AfterContentChecked  {
   loadStudent() {
     this.studentService.getStudent()
       .subscribe(res => {
-          this.listOfStudent = res.content;
-          console.log('student = ', res.content)
+          this.listOfStudent = res._embedded.studentDTOList;
+          console.log('student = ', res)
         },
         error => {
           console.log('error=', error);

@@ -1,101 +1,133 @@
-import {AfterContentChecked, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ProgramService} from '../../services/program.service';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {Program} from '../../model/program';
+import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {ProgramService} from "../../services/program.service";
+import {CreateUpdateProgramComponent} from "./create-update-program/create-update-program.component";
 
 @Component({
   selector: 'app-program',
   templateUrl: './program.component.html',
   styleUrls: ['./program.component.scss']
 })
-export class ProgramComponent    implements OnInit, AfterContentChecked {
-  constructor(private fb: FormBuilder, private programService: ProgramService) {
-    this.addForm = this.fb.group({
-      name: ['',Validators.required]
-    });
-    this.deleteForm = this.fb.group({
-      id: ['', Validators.required]
-    });
-    this.editForm = this.fb.group({
-      name: ['', Validators.required]
-    });
-  }
+export class ProgramComponent implements OnInit {
+  @ViewChild(
+    'drawerTemplate',
+    {static: false})
+  drawerTemplate?: TemplateRef<{
+    $implicit: { value: string };
+    drawerRef: NzDrawerRef<string>;
+  }>;
+  pageSize = 10;
+  pageNumber = 1;
+  totalElements = 0;
   searchValue = '';
   visible = false;
-  visibleDrawer = false;
-  isModalVisible = false;
-  isConfirmLoading = false;
-
-  editObject:any
-  successMessage:any;
-  errorMessage:any;
-  allUserData: any;
-  listOfProgramsData: any; // @ts-ignore
-
+  loading = true;
+  // @ts-ignore
   listOfData: DataItem[] = [];
-  addForm: FormGroup;
-  deleteForm : FormGroup;
-  editForm : FormGroup;
-  id : FormControl;
-  programs:Program[] = [];
-  visibleEditDrawer = false;
+  programs: Program[] = [];
+  listOfProgramsData: any;
+
+  constructor(
+    private notification: NzNotificationService,
+    private programService: ProgramService,
+    private drawerService: NzDrawerService,
+  ) {
+  }
 
   ngOnInit(): void {
-    this.loadPrograms( );
-    this.id = new FormControl();
-    this.deleteForm =    new FormGroup({
-      id: this.id });
-  }
-
-  loadPrograms( )
-  {
-    this.programService.getPrograms()
-      .subscribe(res =>
-      {
-          this.listOfProgramsData =res
-      })
-
-  }
-  open(): void {
-    this.visibleDrawer = true;
-  }
-  close(): void {
-    this.visibleDrawer = false;
+    this.loadPrograms();
   }
 
 
-  // forms inside drawer
-
-  saveProgram(value: { name: string }): void {
-    console.log('value=',value)
-    for (const key in this.addForm.controls) {
-      if (this.addForm.controls.hasOwnProperty(key)) {
-        this.addForm.controls[key].markAsDirty();
-        this.addForm.controls[key].updateValueAndValidity();
-      }
-    }
-    this.programService.addProgram(value).subscribe(
-      data=>{
-        this.successMessage=data+' is added successfully';
+  openDrawer(id: number): void {
+    const drawerRef = this.drawerService.create<CreateUpdateProgramComponent,
+      { id: number }>({
+      nzTitle: `${id ? 'Update' : 'Create'} Programs`,
+      nzWidth:400,
+      nzContent: CreateUpdateProgramComponent,
+      nzContentParams: {
+        value: id,
       },
-      error=> {
-        this.errorMessage= error
+      nzClosable: true,
+      nzKeyboard: true,
+    });
+
+    drawerRef.afterClose.subscribe(() => {
+      this.loadPrograms()
+    })
+  }
+
+  cancel(): void {
+    // this.nzMessageService.info('click cancel');
+  }
+
+  loadPrograms(reset: boolean = false) {
+    if (reset) {
+      this.pageNumber = 1;
+    }
+    this.loading = true;
+    this.programService.getPrograms(this.pageNumber - 1, this.pageSize).subscribe(
+      res => {
+        this.loading = false;
+        console.log(res)
+        this.programs = res._embedded.programDTOList;
+        this.totalElements = res.page.totalElements;
+        this.filterPrograms();
+      },
+      error => {
+        console.log("error = ", error)
+      }
+    )
+
+  }
+
+  searchPrograms(): void {
+    this.visible = false;
+    this.programs = this.listOfData.filter(
+      (item: Program) => item.name.indexOf(this.searchValue) !== -1);
+  }
+
+  filterPrograms() {
+    for (const item of this.programs) {
+      const variable = {
+        id: item.id,
+        name: item.name
+      }
+      this.listOfData.push(variable);
+      this.listOfProgramsData = [...this.listOfData];
+    }
+  }
+
+  resetBusiness(): void {
+    this.searchValue = '';
+    this.searchPrograms();
+  }
+
+  deletePrograms(id?: number) {
+    this.programService.deleteProgram(id).subscribe(
+      (data) => {
+        this.loadPrograms();
+        this.createNotification(
+          'success',
+          'Programs',
+          'Programs Successfully Deleted'
+        );
+      },
+      (error) => {
+        console.log(error)
+        this.createNotification(
+          'error',
+          'Error',
+          error.error.message
+        );
       }
     )
   }
 
-  resetForm(e: MouseEvent): void {
-    e.preventDefault();
-    this.addForm.reset();
-    for (const key in this.addForm.controls) {
-      if (this.addForm.controls.hasOwnProperty(key)) {
-        this.addForm.controls[key].markAsPristine();
-        this.addForm.controls[key].updateValueAndValidity();
-      }
-    }
-  }
-
-  ngAfterContentChecked(): void {
+  createNotification(type: string, title: string, message: string): void {
+    this.notification.create(type, title, message);
   }
 
   reset(): void {
@@ -105,57 +137,8 @@ export class ProgramComponent    implements OnInit, AfterContentChecked {
 
   search(): void {
     this.visible = false;
-    // @ts-ignore
-    this.listOfProgramsData = this.listOfData.filter((item: DataItem) => item.name.indexOf(this.searchValue) !== -1);
-  }
-
-  editDrawer(id:number): void {
-    this.visibleEditDrawer = true;
-    this.programService.findProgramById(id).subscribe(
-      res => {
-      this.editObject=res;
-    })
-
-  }
-
-  closeEditDrawer(): void {
-    this.visibleEditDrawer = false;
-  }
-
-  UpdateForm(value: { name: string}): void {
-    console.log('value=',value)
-    console.log('id=',this.editObject.id)
-    for (const key in this.editForm.controls) {
-      if (this.editForm.controls.hasOwnProperty(key)) {
-        this.editForm.controls[key].markAsDirty();
-        this.editForm.controls[key].updateValueAndValidity();
-      }
-    }
-    this.programService.updateProgram(this.editObject.id,value).subscribe(
-      data=>{
-        this.successMessage='name whose id'+this.editObject.id+' is updated successfully';
-        window.location.reload()
-      },
-      error=> {
-        this.errorMessage= error
-      }
-    )
-  }
-
-  confirm(id:number) {
-    console.log('id=',id)
-    this.programService.deleteProgram(id).subscribe(
-      data=>{
-        this.successMessage=data+' is added successfully';
-
-      },
-      error=> {
-        this.errorMessage= error
-      }
-    )
-  }
-
-  cancel() {
-
+    this.programs = this.listOfData.filter(
+      (item: Program) => item.name.indexOf(this.searchValue) !== -1
+    );
   }
 }

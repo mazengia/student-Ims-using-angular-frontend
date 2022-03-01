@@ -1,0 +1,62 @@
+<form nz-form [formGroup]="DptForm"
+      nzLayout="vertical"
+      (ngSubmit)="onSubmit()">
+  <div formGroupName="department">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>Department</nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Please Select department!">
+        <nz-select formControlName="id"
+                   nzPlaceHolder="Select department"
+                   nzAllowClear
+                   nzShowSearch>
+          <nz-option
+            nzCustomContent
+            *ngFor="let data of listOfDepartmentData" nzValue="{{data.id}}"
+                     nzLabel="{{data.name}}"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+
+  <div formGroupName="programs">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>Program</nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Please Select Program!">
+        <nz-select class="" formControlName="id"
+                   nzPlaceHolder="Select Program"
+                   nzAllowClear
+                   nzShowSearch>
+          <nz-option *ngFor="let data of listOfProgramData"
+                     nzValue="{{data.id}}"
+                     nzLabel="{{data.name}}">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+
+  <div formGroupName="programType">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>Program Type</nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Please Select Program Type!">
+        <nz-select formControlName="id"
+                   nzPlaceHolder="Select Program Type"
+                   nzAllowClear
+                   nzShowSearch>
+          <nz-option *ngFor="let data of listOfProgramTypeData"
+                     nzValue="{{data.id}}"
+                     nzLabel="{{data.name}}"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="18">
+      <button nz-button nzType="primary" [disabled]="!DptForm.valid">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

@@ -1,0 +1,56 @@
+<form nzLayout="vertical" nz-form [formGroup]="addStudentForm" (ngSubmit)="onSubmit()">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>First Name</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="Please write first name">
+      <input nz-input formControlName="firstName"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Lastname</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="Please write last name">
+      <input nz-input formControlName="lastName"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Username</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="Please write user name">
+      <input nz-input formControlName="username"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Email</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="Please write email">
+      <input nz-input type="email" formControlName="email"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Password</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="Please write password">
+      <input nz-input type="password" formControlName="password"/>
+    </nz-form-control>
+  </nz-form-item>
+  <div formGroupName="dpt">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>Department</nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Please write department">
+        <nz-select
+                   formControlName="id" nzPlaceHolder="Select department"
+                   nzAllowClear
+                   nzShowSearch>
+          <nz-option *ngFor="let data of dpts" nzValue="{{data.id}}"
+                     nzLabel="{{data.department.name}} {{data.programs.name}} {{data.programType.name}}"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="18">
+      <button nz-button nzType="primary" [disabled]="!addStudentForm.valid">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

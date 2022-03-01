@@ -11,6 +11,8 @@ export class Student
 
 export class StudentResponse
 {
-  content:Student[];
-  pageable:page;
+  _embedded: {
+    studentDTOList: Student[];
+  };
+  page:page;
 }

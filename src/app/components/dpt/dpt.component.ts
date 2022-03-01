@@ -1,144 +1,132 @@
-import {AfterContentChecked, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+
+import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {DptService} from '../../services/dpt.service';
-import {DepartmentService} from '../../services/department.service';
-import {ProgramService} from '../../services/program.service';
-import {ProgramTypeService} from '../../services/program-type.service';
+import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {Dpt} from "../../model/dpt";
+import {CreateUpdateDptComponent} from "./create-update-dpt/create-update-dpt.component";
 
 @Component({
   selector: 'app-dpt',
   templateUrl: './dpt.component.html',
   styleUrls: ['./dpt.component.scss']
 })
-export class DptComponent implements OnInit, AfterContentChecked {
-  constructor(private fb: FormBuilder, private dptService: DptService, private departmentService: DepartmentService, private programService: ProgramService, private programTypeService: ProgramTypeService) {
-    this.DptForm = this.fb.group({
-      departmentId: ['', Validators.required],
-      programId: ['', Validators.required],
-      programTypeId: ['', Validators.required]
-    });
-    this.deleteForm = this.fb.group({
-      id: ['', Validators.required]
-    });
-    this.editForm = this.fb.group({
-      name: ['', Validators.required]
-    });
-
-  }
-
+export class DptComponent implements  OnInit {
+  @ViewChild(
+    'drawerTemplate',
+    {static: false})
+  drawerTemplate?: TemplateRef<{
+    $implicit: { value: string };
+    drawerRef: NzDrawerRef<string>;
+  }>;
+  pageSize = 10;
+  pageNumber = 1;
+  totalElements = 0;
   searchValue = '';
   visible = false;
-  visibleDrawer = false;
-  isModalVisible = false;
-  isConfirmLoading = false;
+  loading= true;
+  // @ts-ignore
+  listOfData: DataItem[] = [];
+  dpts: Dpt[] = [];
 
-  editObject: any
-  successMessage: any;
-  errorMessage: any;
-  allUserData: any;
-  listOfDepartmentData: any;
-  listOfProgramData: any;
-  listOfProgramTypeData: any;
-  listOfDptData: any; // @ts-ignore
-  listOfDepartment: DataItem[] = [];
-  DptForm: FormGroup;
-  deleteForm: FormGroup;
-  editForm: FormGroup;
-  id: FormControl;
-
-  visibleEditDrawer = false;
+  constructor(
+    private notification: NzNotificationService,
+    private dptService: DptService,
+    private drawerService: NzDrawerService,
+  ) {
+  }
 
   ngOnInit(): void {
-    this.loadDpt();
-    this.loadDepartments();
-    this.loadPrograms();
-    this.loadProgramsType();
-    this.id = new FormControl();
-    this.deleteForm = new FormGroup({
-      id: this.id
+    this.loadDpts();
+  }
+
+
+  openDrawer(id: number): void {
+    const drawerRef = this.drawerService.create<CreateUpdateDptComponent,
+      { id: number }>({
+      nzTitle: `${id ? 'Update' : 'Create'} Dpt`,
+      nzWidth:400,
+      nzContent: CreateUpdateDptComponent,
+      nzContentParams: {
+        value: id,
+      },
+      nzClosable: true,
+      nzKeyboard: true,
     });
-  }
 
-  loadDepartments() {
-    this.departmentService.getDepartment().subscribe(
-      res => {
-        this.listOfDepartmentData = res;
-      },
-      error => {
-        console.log('error=', error);
-      })
-  }
-
-  loadPrograms() {
-    this.programService.getPrograms().subscribe(
-      res => {
-        this.listOfProgramData = res;
-      },
-      error => {
-        console.log('error=', error);
-      })
-  }
-
-  loadProgramsType() {
-    this.programTypeService.getProgramsType().subscribe(res => {
-      this.listOfProgramTypeData = res;
+    drawerRef.afterClose.subscribe(() => {
+      this.loadDpts()
     })
   }
 
-  loadDpt() {
-    this.dptService.getDpt().subscribe(
+  cancel(): void {
+    // this.nzMessageService.info('click cancel');
+  }
+
+  loadDpts(reset: boolean = false) {
+    if (reset) {
+      this.pageNumber = 1;
+    }
+    this.loading = true;
+    this.dptService.getDpt(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
-        this.listOfDptData = res;
+        this.loading = false;
+        this.dpts = res._embedded.dptDTOList;
+        this.totalElements = res.page.totalElements;
+        this.filterDpts();
       },
       error => {
-        console.log('error=', error);
-      })
-  }
-
-  open(): void {
-    this.visibleDrawer = true;
-  }
-
-  close(): void {
-    this.visibleDrawer = false;
-    this.visibleEditDrawer = false;
-  }
-
-  saveDpt( ): void {
-    for (const key in this.DptForm.controls) {
-      if (this.DptForm.controls.hasOwnProperty(key)) {
-        this.DptForm.controls[key].markAsDirty();
-        this.DptForm.controls[key].updateValueAndValidity();
+        console.log("error = ", error)
       }
-    }
-    const sendRequest = {
-      // department: { id: this.DptForm.controls.departmentId.value},
-      programs: { id: this.DptForm.controls.programId.value},
-      programType: {id: this.DptForm.controls.programTypeId.value}
-    }
-    console.log(sendRequest)
-    this.dptService.addDpt(sendRequest)
-      .subscribe(data => {
-          this.successMessage = data + ' is added successfully';
-        },
-        error => {
-          this.errorMessage = error
-        }
-      )
+    )
+
   }
 
-  resetForm(e: MouseEvent): void {
-    e.preventDefault();
-    this.DptForm.reset();
-    for (const key in this.DptForm.controls) {
-      if (this.DptForm.controls.hasOwnProperty(key)) {
-        this.DptForm.controls[key].markAsPristine();
-        this.DptForm.controls[key].updateValueAndValidity();
+  searchDpts(): void {
+    this.visible = false;
+    // this.dpts = this.listOfData.filter(
+    //   (item: Dpt) => item.name.indexOf(this.searchValue) !== -1);
+  }
+
+  filterDpts() {
+    // for (const item of this.dpts) {
+    //   const variable = {
+    //     id: item.id,
+    //     name: item.name
+    //   }
+    //   this.listOfData.push(variable);
+    //   this.listOfRoleData = [...this.listOfData];
+    // }
+  }
+
+  resetBusiness(): void {
+    this.searchValue = '';
+    this.searchDpts();
+  }
+
+  deleteDpt(id?: number) {
+    this.dptService.deleteDpt(id).subscribe(
+      (data) => {
+        this.loadDpts();
+        this.createNotification(
+          'success',
+          'Dpt',
+          'Dpt Successfully Deleted'
+        );
+      },
+      (error) => {
+        console.log(error)
+        this.createNotification(
+          'error',
+          'Error',
+          error.error.message
+        );
       }
-    }
+    )
   }
 
-  ngAfterContentChecked(): void {
+  createNotification(type: string, title: string, message: string): void {
+    this.notification.create(type, title, message);
   }
 
   reset(): void {
@@ -147,53 +135,11 @@ export class DptComponent implements OnInit, AfterContentChecked {
   }
 
   search(): void {
-    this.visible = false;
-    // @ts-ignore
-    this.listOfDptData = this.listOfDepartment.filter((item: DataItem) => item.name.indexOf(this.searchValue) !== -1);
-  }
-
-  editDrawer(id: number): void {
-    this.visibleEditDrawer = true;
-    this.dptService.findDptById(id).subscribe(
-      res => {
-        this.editObject = res;
-      })
-
-  }
-
-
-  UpdateForm(value: { name: string }): void {
-    for (const key in this.editForm.controls) {
-      if (this.editForm.controls.hasOwnProperty(key)) {
-        this.editForm.controls[key].markAsDirty();
-        this.editForm.controls[key].updateValueAndValidity();
-      }
-    }
-    this.dptService.updateDpt(this.editObject.id, value).subscribe(
-      data => {
-        this.successMessage = 'name whose id' + this.editObject.id + ' is updated successfully';
-        window.location.reload()
-      },
-      error => {
-        this.errorMessage = error
-      }
-    )
-  }
-
-  confirm(id: number) {
-    console.log('id=', id)
-    this.dptService.deleteDpt(id).subscribe(
-      data => {
-        this.successMessage = data + ' is added successfully';
-      },
-      error => {
-        this.errorMessage = error
-      }
-    )
-  }
-
-  cancel() {
-
+    // this.visible = false;
+    // this.dpts = this.listOfData.filter(
+    //   (item: Dpt) => item.name.indexOf(this.searchValue) !== -1
+    // );
   }
 }
+
 

@@ -31,6 +31,13 @@ import {NzSelectModule} from "ng-zorro-antd/select";
 import {CreateUpdateDepartmentComponent} from "../department/create-update-department/create-update-department.component";
 import {NzSpinModule} from "ng-zorro-antd/spin";
 import {CreateUpdateStatusComponent} from "../status/create-update-status/create-update-status.component";
+import {CreateUpdateCourseComponent} from "../course/create-update-course/create-update-course.component";
+import {CreateUpdateStudentComponent} from "../student/create-update-student/create-update-student.component";
+import {CreateUpdateDptComponent} from "../dpt/create-update-dpt/create-update-dpt.component";
+import {NzDividerModule} from "ng-zorro-antd/divider";
+import {
+  CreateUpdateProgramTypeComponent
+} from "../program-type/create-update-program-type/create-update-program-type.component";
 
 
 @NgModule({
@@ -49,7 +56,11 @@ import {CreateUpdateStatusComponent} from "../status/create-update-status/create
     RolesComponent,
     CreateUpdateRoleComponent,
     StatusComponent,
-    CreateUpdateStatusComponent
+    CreateUpdateStatusComponent,
+    CreateUpdateCourseComponent,
+    CreateUpdateStudentComponent,
+    CreateUpdateDptComponent,
+    CreateUpdateProgramTypeComponent
   ],
     imports: [
         CommonModule,
@@ -68,7 +79,8 @@ import {CreateUpdateStatusComponent} from "../status/create-update-status/create
         NzDrawerModule,
         NzInputModule,
         NzSelectModule,
-        NzSpinModule
+        NzSpinModule,
+        NzDividerModule
     ]
 })
 export class MainAppModule { }

@@ -1,0 +1,55 @@
+<form nzLayout="vertical" nz-form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>name</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="Please write course name">
+      <input nz-input formControlName="name"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>code</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="Please write course code">
+      <input nz-input formControlName="code"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>credit Hour</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="please write credit hour">
+      <input type="number" nz-input formControlName="creditHour"/>
+    </nz-form-control>
+  </nz-form-item>
+
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>ECTS</nz-form-label>
+    <nz-form-control [nzSpan]="24" nzErrorTip="Please write ects!">
+      <input type="number" nz-input formControlName="ects"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div formGroupName="department">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>Department</nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Please Select department!">
+      <nz-select
+        class="form-item-control"
+        formControlName="id"
+        nzPlaceHolder="Select department"
+        nzAllowClear
+        nzShowSearch>
+        <nz-option *ngFor="let data of departments"
+                   nzValue="{{data.id}}"
+                   nzLabel="{{data.code}}">
+        </nz-option>
+      </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="18">
+      <button nz-button nzType="primary" [disabled]="!courseForm.valid">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

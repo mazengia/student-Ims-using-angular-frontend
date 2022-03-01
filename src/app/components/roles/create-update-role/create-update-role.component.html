@@ -2,11 +2,8 @@
   <form  nz-form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>name</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
+      <nz-form-control [nzSpan]="24"   nzErrorTip="please write role name">
         <input nz-input formControlName="name"   />
-        <ng-template #userErrorTpl let-control>
-          <ng-container *ngIf="control.hasError('required')">Please input role!</ng-container>
-        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>

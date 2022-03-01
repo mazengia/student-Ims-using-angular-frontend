@@ -1,5 +1,4 @@
-import {AfterContentChecked, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {DepartmentService} from '../../services/department.service';
 import {Department} from '../../model/department';
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -27,7 +26,7 @@ export class DepartmentComponent  implements OnInit {
   isDataFound = false;
   // @ts-ignore
   listOfData: DataItem[] = [];
-  departments: Department[] = [];
+  departments: Department[]=[];
   listOfDepartmentData: any;
 
   constructor(
@@ -46,6 +45,7 @@ export class DepartmentComponent  implements OnInit {
     const drawerRef = this.drawerService.create<CreateUpdateDepartmentComponent,
       { id: number }>({
       nzTitle: `${id ? 'Update' : 'Create'} Department`,
+      nzWidth:400,
       nzContent: CreateUpdateDepartmentComponent,
       nzContentParams: {
         value: id,
@@ -71,6 +71,7 @@ export class DepartmentComponent  implements OnInit {
       res => {
         // console.log(res)
          this.departments = res._embedded.departmentDTOList;
+         console.log("dept=",res._embedded.departmentDTOList)
         this.totalElements = res.page.totalElements;
         this.filterDepartments();
         this.isDataFound=true;
@@ -85,11 +86,13 @@ export class DepartmentComponent  implements OnInit {
 
   searchDepartments(): void {
     this.visible = false;
+    // @ts-ignore
     this.departments = this.listOfData.filter(
       (item: Department) => item.name.indexOf(this.searchValue) !== -1);
   }
 
   filterDepartments() {
+    // @ts-ignore
     for (const item of this.departments) {
       const variable = {
         id: item.id,
@@ -136,6 +139,7 @@ export class DepartmentComponent  implements OnInit {
   }
   search(): void {
     this.visible = false;
+    // @ts-ignore
     this.departments = this.listOfData.filter(
       (item: Department) => item.name.indexOf(this.searchValue) !== -1
     );

@@ -4,28 +4,41 @@ import {DepartmentService} from "../../../services/department.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzDrawerRef} from "ng-zorro-antd/drawer";
 import {finalize, first} from "rxjs/operators";
+import {DptService} from "../../../services/dpt.service";
+import {Dpt} from "../../../model/dpt";
 
 @Component({
-  selector: 'app-create-update-department',
-  templateUrl: './create-update-department.component.html',
-  styleUrls: ['./create-update-department.component.sass']
+  selector: 'app-create-update-student',
+  templateUrl: './create-update-student.component.html',
+  styleUrls: ['./create-update-student.component.sass']
 })
-export class CreateUpdateDepartmentComponent implements OnInit {
+export class CreateUpdateStudentComponent implements OnInit {
   isAddMode = true;
   loading = false;
   submitted = false;
+  pageSize = 10;
+  pageNumber = 1;
+  dpts: Dpt[]=[];
   @Input() value: number;
-  departmentForm: FormGroup;
+  addStudentForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private departmentService: DepartmentService,
     private notification: NzNotificationService,
+    private dptService: DptService,
     private drawerRef: NzDrawerRef<string>
   ) {
-    this.departmentForm = this.fb.group({
-      name: ['', [Validators.required]],
-      code: ['', [Validators.required]]
+
+    this.addStudentForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      password: ['', Validators.required],
+      dpt: this.fb.group({
+        id: [null, [Validators.required]]
+      }),
+      email: ['', Validators.required],
+      username: ['', Validators.required]
     });
   }
 
@@ -34,11 +47,12 @@ export class CreateUpdateDepartmentComponent implements OnInit {
     if (this.value) {
       this.loadDepartmentById();
     }
+    this.loadDpts();
   }
 
   onSubmit() {
     this.submitted = true;
-    if (this.departmentForm.invalid) {
+    if (this.addStudentForm.invalid) {
       return;
     }
 
@@ -52,8 +66,7 @@ export class CreateUpdateDepartmentComponent implements OnInit {
 
   saveDepartment(): void {
     this.resetForm();
-    console.log("post dept=",this.departmentForm.value)
-    this.departmentService.addDepartment(this.departmentForm.value)
+    this.departmentService.addDepartment(this.addStudentForm.value)
       .pipe(finalize(() => {
         this.drawerRef.close()
       }))
@@ -76,10 +89,10 @@ export class CreateUpdateDepartmentComponent implements OnInit {
   }
 
   resetForm(): void {
-    for (const key in this.departmentForm.controls) {
-      if (this.departmentForm.controls.hasOwnProperty(key)) {
-        this.departmentForm.controls[key].markAsDirty();
-        this.departmentForm.controls[key].updateValueAndValidity();
+    for (const key in this.addStudentForm.controls) {
+      if (this.addStudentForm.controls.hasOwnProperty(key)) {
+        this.addStudentForm.controls[key].markAsDirty();
+        this.addStudentForm.controls[key].updateValueAndValidity();
       }
     }
   }
@@ -90,7 +103,7 @@ export class CreateUpdateDepartmentComponent implements OnInit {
       .pipe(first())
       .subscribe((res) => {
         if (!this.isAddMode) {
-          this.departmentForm.patchValue(res);
+          this.addStudentForm.patchValue(res);
         }
       });
   }
@@ -99,7 +112,7 @@ export class CreateUpdateDepartmentComponent implements OnInit {
 
     this.resetForm();
     this.departmentService
-      .updateDepartment(this.value, this.departmentForm.value)
+      .updateDepartment(this.value, this.addStudentForm.value)
       .subscribe(
         data => {
           this.createNotification(
@@ -120,5 +133,21 @@ export class CreateUpdateDepartmentComponent implements OnInit {
 
   createNotification(type: string, title: string, message: string): void {
     this.notification.create(type, title, message);
+  }
+  loadDpts(reset: boolean = false) {
+    if (reset) {
+      this.pageNumber = 1;
+    }
+    this.loading = true;
+    this.dptService.getDpt(this.pageNumber - 1, this.pageSize).subscribe(
+      res => {
+        this.loading = false;
+        this.dpts = res._embedded.dptDTOList;
+      },
+      error => {
+        console.log("error = ", error)
+      }
+    )
+
   }
 }

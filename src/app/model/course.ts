@@ -10,7 +10,9 @@ export class Course{
   department:Department[];
 }
 export class CourseResponse {
-  _embedded: Course[];
+  _embedded: {
+    courseDTOList: Course[];
+  };
   page:page;
 }
 

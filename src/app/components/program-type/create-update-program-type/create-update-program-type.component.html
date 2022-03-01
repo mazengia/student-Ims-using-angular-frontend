@@ -1,5 +1,5 @@
 
-<form nz-form [formGroup]="programsForm" (ngSubmit)="onSubmit()">
+<form nz-form [formGroup]="programsTypeForm" (ngSubmit)="onSubmit()">
   <nz-form-item>
     <nz-form-label [nzSpan]="7" nzRequired>name</nz-form-label>
     <nz-form-control [nzSpan]="24"   nzErrorTip="please write program name">
@@ -8,7 +8,7 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-control [nzOffset]="7" [nzSpan]="18">
-      <button nz-button nzType="primary" [disabled]="!programsForm.valid">Submit</button>
+      <button nz-button nzType="primary" [disabled]="!programsTypeForm.valid">Submit</button>
     </nz-form-control>
   </nz-form-item>
 </form>

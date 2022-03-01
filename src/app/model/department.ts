@@ -1,10 +1,9 @@
  import {page} from './Page';
- import {Roles} from "./Roles";
 
 export class Department{
   id	  :string;
-  code	:string;
   name	:string;
+  code	:string;
 
 }
 export  class DepartmentResponse{

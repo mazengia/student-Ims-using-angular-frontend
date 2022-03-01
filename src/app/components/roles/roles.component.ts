@@ -45,6 +45,7 @@ export class RolesComponent implements OnInit {
     const drawerRef = this.drawerService.create<CreateUpdateRoleComponent,
       { id: number }>({
       nzTitle: `${id ? 'Update' : 'Create'} Role`,
+      nzWidth:400,
       nzContent: CreateUpdateRoleComponent,
       nzContentParams: {
         value: id,
