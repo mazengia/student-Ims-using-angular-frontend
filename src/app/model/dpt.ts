@@ -7,9 +7,9 @@ import {ProgramType} from "./programType";
 
 export class Dpt {
   id?: number;
-  department: Department;
-  programType: ProgramType;
-  programs: Program;
+  department: Department[];
+  programType: ProgramType[];
+  programs: Program[];
 }
 
 export class DptResponse {

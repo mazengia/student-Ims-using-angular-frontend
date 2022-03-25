@@ -68,10 +68,10 @@ export class ProgramComponent implements OnInit {
       this.pageNumber = 1;
     }
     this.loading = true;
-    this.programService.getPrograms(this.pageNumber - 1, this.pageSize).subscribe(
-      res => {
+    this.programService.getPrograms(this.pageNumber - 1, this.pageSize)
+      .subscribe(res => {
         this.loading = false;
-        console.log(res)
+        // console.log(res)
         this.programs = res._embedded.programDTOList;
         this.totalElements = res.page.totalElements;
         this.filterPrograms();

@@ -27,7 +27,7 @@ export class CourseComponent  implements OnInit {
   loading= true;
   // @ts-ignore
   listOfData: DataItem[] = [];
-  courses: Course[] = [];
+  courses: Course[];
   listOfCourseData: any;
 
   constructor(

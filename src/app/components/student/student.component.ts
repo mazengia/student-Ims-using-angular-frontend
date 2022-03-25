@@ -26,7 +26,7 @@ export class StudentComponent implements OnInit {
   isDataFound = false;
   // @ts-ignore
   listOfData: DataItem[] = [];
-  students: Student[] = [];
+  students: Student[];
   listOfStudentData: any;
 
   constructor(
@@ -45,7 +45,7 @@ export class StudentComponent implements OnInit {
     const drawerRef = this.drawerService.create<CreateUpdateStudentComponent,
       { id: number }>({
       nzTitle: `${id ? 'Update' : 'Create'} Student`,
-      nzWidth:400,
+      nzWidth:550,
       nzContent: CreateUpdateStudentComponent,
       nzContentParams: {
         value: id,
@@ -69,7 +69,7 @@ export class StudentComponent implements OnInit {
     }
     this.studentService.getStudent(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
-        // console.log(res)
+        console.log("student = ",res)
         this.students = res._embedded.studentDTOList;
         this.totalElements = res.page.totalElements;
         this.filterStudent();

@@ -4,7 +4,7 @@
       <div class="login-layout">
 
         <h3 class="login-title">Login Page</h3>
-        <form *ngIf="!isLoggedIn" nz-form name="form" [formGroup]="validateForm" (ngSubmit)="onSubmit()">
+        <form *ngIf="!isLoggedIn" nz-form name="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <nz-form-item>
             <nz-form-label [nzSpan]="4">UserName</nz-form-label>
             <nz-form-control
@@ -29,8 +29,8 @@
                   class="ant-input-clear-icon"
                   nzTheme="fill"
                   nzType="close-circle"
-                  *ngIf="validateForm.controls.username.value.length>0"
-                  (click)="validateForm.controls.username.setValue('')"
+                  *ngIf="loginForm.controls.username.value.length>0"
+                  (click)="loginForm.controls.username.setValue('')"
                 ></i>
               </ng-template>
 
@@ -59,8 +59,8 @@
                   class="ant-input-clear-icon"
                   nzTheme="fill"
                   nzType="close-circle"
-                  *ngIf="validateForm.controls.password.value.length>0"
-                  (click)="validateForm.controls.password.setValue('')"
+                  *ngIf="loginForm.controls.password.value.length>0"
+                  (click)="loginForm.controls.password.setValue('')"
                 ></i>
                 <i
                   nz-icon
@@ -89,6 +89,8 @@
               <button
                 type="submit"
                 nz-button
+                [nzLoading]="loading"
+                [disabled]="disabled"
                 style="width: 100px;"
                 nzType="primary"
               >Login

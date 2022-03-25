@@ -13,9 +13,12 @@ import {TokenStorageService} from "../../config/_services/token-storage.service"
 })
 export class LoginComponent implements OnInit {
   isLoggedIn = false;
+  disabled = false;
+  loading = false;
   isLoginFailed = false;
   errorMessage = '';
   roles: string[] = [];
+
   constructor(
     private router: Router,
     public login: FormBuilder,
@@ -24,8 +27,9 @@ export class LoginComponent implements OnInit {
     private tokenStorage: TokenStorageService
   ) {
   }
+
   ngOnInit(): void {
-    this.validateForm = this.login.group({
+    this.loginForm = this.login.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
       remember: [true]
@@ -36,44 +40,49 @@ export class LoginComponent implements OnInit {
       this.roles = this.tokenStorage.getUser().roles;
     }
   }
+
   JSON = JSON;
-  public validateForm!: FormGroup;
+  public loginForm!: FormGroup;
 
   passwordVisible: Boolean = false;
 
   //
   onSubmit(): void {
-    for (const i in this.validateForm.controls) {
-      this.validateForm.controls[i].markAsDirty();
-      this.validateForm.controls[i].updateValueAndValidity();
+    for (const i in this.loginForm.controls) {
+      this.loginForm.controls[i].markAsDirty();
+      this.loginForm.controls[i].updateValueAndValidity();
     }
-    if (this.validateForm.status === 'INVALID') {
+    if (this.loginForm.status === 'INVALID') {
       this.message.create('warning', 'warning Empty Field Is Not Allowed');
       return;
     }
 
 
-    if (this.validateForm.status === 'VALID') {
-      this.authService.login(this.validateForm.value).subscribe(
+    if (this.loginForm.status === 'VALID') {
+      this.loading = true;
+      this.disabled = true;
+      this.authService.login(this.loginForm.value).subscribe(
         data => {
           this.tokenStorage.saveToken(data.accessToken);
           this.tokenStorage.saveUser(data);
-
           this.isLoginFailed = false;
           this.isLoggedIn = true;
           this.roles = this.tokenStorage.getUser().roles;
-          this.router.navigate(['/main-app']);
+          this.router.navigate(['/main-app']).then(r => {
+            return r
+          });
 
         },
         err => {
+
+          this.loading = false;
+          this.disabled = false;
           this.isLoginFailed = true;
-          this.message.create( 'error',"Bad Credentials Please Try Again !!");
+          this.message.create('error', "Bad Credentials Please Try Again !!");
         }
       );
     }
   }
-
-
 
 
 }

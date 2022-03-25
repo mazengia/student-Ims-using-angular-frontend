@@ -4,6 +4,7 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 import {CreateUpdateProgramComponent} from "../program/create-update-program/create-update-program.component";
 import {ProgramTypeService} from "../../services/program-type.service";
 import {ProgramType} from "../../model/programType";
+import {CreateUpdateProgramTypeComponent} from "./create-update-program-type/create-update-program-type.component";
 
 @Component({
   selector: 'app-program-type',
@@ -42,11 +43,11 @@ export class ProgramTypeComponent implements OnInit {
 
 
   openDrawer(id: number): void {
-    const drawerRef = this.drawerService.create<CreateUpdateProgramComponent,
+    const drawerRef = this.drawerService.create<CreateUpdateProgramTypeComponent,
       { id: number }>({
-      nzTitle: `${id ? 'Update' : 'Create'} Programs`,
+      nzTitle: `${id ? 'Update' : 'Create'} Program Types`,
       nzWidth: 400,
-      nzContent: CreateUpdateProgramComponent,
+      nzContent: CreateUpdateProgramTypeComponent,
       nzContentParams: {
         value: id,
       },
@@ -71,7 +72,7 @@ export class ProgramTypeComponent implements OnInit {
     this.programService.getProgramsType(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
         this.loading = false;
-        console.log(res)
+        // console.log(res)
         this.programsType = res._embedded.programTypeDTOList;
         this.totalElements = res.page.totalElements;
         this.filterPrograms();

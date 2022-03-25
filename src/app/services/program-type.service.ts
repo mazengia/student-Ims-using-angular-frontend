@@ -3,7 +3,7 @@ import {ProgramResponse} from '../model/program';
 import {environment} from '../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {ProgramTypeResponse} from "../model/programType";
+import {ProgramType, ProgramTypeResponse} from "../model/programType";
 @Injectable({
   providedIn: 'root'
 })
@@ -17,19 +17,19 @@ export class ProgramTypeService {
     .append('size', `${pageSize}`);
     return this.http.get<ProgramTypeResponse>(`${environment.Url}/program-type`,{params} );
   }
-  addProgramType(inputName:any):Observable<any>
+  addProgramType(programType:ProgramType):Observable<ProgramType>
   {
-    return this.http.post(`${environment.Url}/program-type`,inputName ,{ responseType: 'text' }  );
+    return this.http.post<ProgramType>(`${environment.Url}/program-type`,programType    );
   }
-  deleteProgramType(id:number):Observable<any>
+  deleteProgramType(id:number):Observable<ProgramType>
   {
-    return this.http.post(`${environment.Url}/program-type/${id}` ,{ responseType: 'text' }  );
+    return this.http.delete<ProgramType>(`${environment.Url}/program-type/${id}`   );
   }
-  updateProgramType(id: number, value: any): Observable<any> {
-    return this.http.put(`${environment.Url}/program-type/${id}`, value,{ responseType: 'text' });
+  updateProgramType(id: number, programType: ProgramType): Observable<ProgramType> {
+    return this.http.put<ProgramType>(`${environment.Url}/program-type/${id}`, programType );
   }
-  findProgramTypeById(id: number): Observable<any> {
-    return this.http.get(`${environment.Url}/program-type/${id}` );
+  findProgramTypeById(id: number): Observable<ProgramType> {
+    return this.http.get<ProgramType>(`${environment.Url}/program-type/${id}` );
   }
 }
 

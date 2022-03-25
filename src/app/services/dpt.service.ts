@@ -4,6 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {RolesResponse} from "../model/Roles";
+import {Dpt, DptResponse} from "../model/dpt";
 
 @Injectable({
   providedIn: 'root'
@@ -11,26 +12,26 @@ import {RolesResponse} from "../model/Roles";
 export class DptService {
   constructor(private http:HttpClient) { }
 
-  getDpt(pageNumber: number = 1, pageSize: number = 10 ):Observable<any>
+  getDpt(pageNumber: number = 1, pageSize: number = 10 ):Observable<DptResponse>
   {const params = new HttpParams()
     .append('page', `${pageNumber}`)
     .append('size', `${pageSize}`);
-    return this.http.get (`${environment.Url}/department-program-type`,{params} ).pipe( catchError( this.errorHandler));
+    return this.http.get<DptResponse>(`${environment.Url}/department-program-type`,{params} ).pipe( catchError( this.errorHandler));
   }
 
-  addDpt(inputName:any):Observable<any>
+  addDpt(dpt:Dpt):Observable<Dpt>
   {
-    return this.http.post(`${environment.Url}/department-program-type`,inputName ,{ responseType: 'text' }  ).pipe( catchError( this.errorHandler));
+    return this.http.post<Dpt>(`${environment.Url}/department-program-type`,dpt  ).pipe( catchError( this.errorHandler));
   }
-  deleteDpt(id:number):Observable<any>
+  deleteDpt(id:number):Observable<Dpt>
   {
-    return this.http.post(`${environment.Url}/department-program-type/${id}` ,{ responseType: 'text' }  ).pipe( catchError( this.errorHandler));
+    return this.http.delete<Dpt>(`${environment.Url}/department-program-type/${id}`    ).pipe( catchError( this.errorHandler));
   }
-  updateDpt(id: number, value: any): Observable<any> {
-    return this.http.put(`${environment.Url}/department-program-type/${id}`, value,{ responseType: 'text' }).pipe( catchError( this.errorHandler));
+  updateDpt(id: number, dpt: Dpt): Observable<Dpt> {
+    return this.http.put<Dpt>(`${environment.Url}/department-program-type/${id}`, dpt ).pipe( catchError( this.errorHandler));
   }
-  findDptById(id: number): Observable<any> {
-    return this.http.get(`${environment.Url}/department-program-type/${id}` ).pipe( catchError( this.errorHandler));
+  findDptById(id: number): Observable<DptResponse> {
+    return this.http.get<DptResponse>(`${environment.Url}/department-program-type/${id}` ).pipe( catchError( this.errorHandler));
   }
 
   errorHandler(error:any) {

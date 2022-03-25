@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {DepartmentService} from '../../services/department.service';
 import {Department} from '../../model/department';
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -10,7 +10,7 @@ import {CreateUpdateDepartmentComponent} from "./create-update-department/create
   templateUrl: './department.component.html',
   styleUrls: ['./department.component.scss']
 })
-export class DepartmentComponent  implements OnInit {
+export class DepartmentComponent implements OnInit {
   @ViewChild(
     'drawerTemplate',
     {static: false})
@@ -26,7 +26,7 @@ export class DepartmentComponent  implements OnInit {
   isDataFound = false;
   // @ts-ignore
   listOfData: DataItem[] = [];
-  departments: Department[]=[];
+  departments: Department[] = [];
   listOfDepartmentData: any;
 
   constructor(
@@ -45,7 +45,7 @@ export class DepartmentComponent  implements OnInit {
     const drawerRef = this.drawerService.create<CreateUpdateDepartmentComponent,
       { id: number }>({
       nzTitle: `${id ? 'Update' : 'Create'} Department`,
-      nzWidth:400,
+      nzWidth: 400,
       nzContent: CreateUpdateDepartmentComponent,
       nzContentParams: {
         value: id,
@@ -70,15 +70,14 @@ export class DepartmentComponent  implements OnInit {
     this.departmentService.getDepartment(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
         // console.log(res)
-         this.departments = res._embedded.departmentDTOList;
-         console.log("dept=",res._embedded.departmentDTOList)
+        this.departments = res._embedded.departmentDTOList;
         this.totalElements = res.page.totalElements;
         this.filterDepartments();
-        this.isDataFound=true;
+        this.isDataFound = true;
       },
       error => {
-        console.log("error = ",error)
-        this.isDataFound=false;
+        console.log("error = ", error)
+        this.isDataFound = false;
       }
     )
 
@@ -137,6 +136,7 @@ export class DepartmentComponent  implements OnInit {
     this.searchValue = '';
     this.search();
   }
+
   search(): void {
     this.visible = false;
     // @ts-ignore

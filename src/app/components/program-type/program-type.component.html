@@ -39,22 +39,13 @@
       <td>{{ i + 1 }}</td>
       <td>{{ data.name }}</td>
       <td nzAlign="center">
-        <div nz-row>
-          <div nz-col nzSpan="8"></div>
-          <div nz-col nzSpan="4">
-            <i class="edit-btn" nz-icon nzType="edit" (click)="openDrawer(data.id)" nzTheme="outline"
-               nz-tooltip="edit"></i>
-          </div>
-          <div nz-col nzSpan="4"></div>
-          <div nz-col nzSpan="4">
-            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this task?"
-               (nzOnConfirm)="deletePrograms(data.id)" (nzOnCancel)="cancel()">
-              <i class="delete-button" nzTooltipColor="red" nz-icon nzType="delete" nzTheme="outline"
-                 nz-tooltip="delete"></i>
-            </a>
-          </div>
-          <div nz-col nzSpan="4"></div>
-        </div>
+        <i class="edit-btn" nz-icon nzType="edit" (click)="openDrawer(data.id)" nzTheme="outline"
+           nz-tooltip="edit"></i>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a class="delete-button" nz-popconfirm="" nzPopconfirmTitle="Are you sure delete this task?"
+           (nzOnConfirm)="deletePrograms(data.id)" (nzOnCancel)="cancel()">
+          <i   nzTooltipColor="red" nz-icon nzType="delete" nzTheme="outline" nz-tooltip="delete"></i>
+        </a>
       </td>
     </tr>
     </tbody>

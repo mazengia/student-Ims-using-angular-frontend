@@ -1,10 +1,10 @@
-
 <nz-card [nzTitle]="cardTitle" [nzExtra]="tabExtraTpl">
   <ng-template #cardTitle>
-    <i nz-icon nzType="branches"></i>  student Enrollment
+    <i nz-icon nzType="branches"></i> student Enrollment
   </ng-template>
   <ng-template #tabExtraTpl>
-    <button nz-button nzType="primary" (click)="open()" class="add-button"><i nz-icon nzType="plus"></i>Enroll Student</button>
+    <button nz-button nzType="primary" (click)="open()" class="add-button"><i nz-icon nzType="plus"></i>Enroll Student
+    </button>
   </ng-template>
   <nz-table #basicTable [nzData]="listOfStudentData">
     <thead>
@@ -24,9 +24,9 @@
     </thead>
     <tbody>
     <tr *ngFor="let data of basicTable.data; let i = index">
-      <td>{{ i+1 }}</td>
+      <td>{{ i + 1 }}</td>
       <td>{{data.systemUser.username}}</td>
-      <td >{{ data.firstSemester }}</td>
+      <td>{{data.firstSemester }}</td>
       <td>{{data.secondSemester}}</td>
       <td>{{data.thirdSemester}}</td>
       <td>{{data.firstSemesterPoint}}</td>
@@ -34,21 +34,14 @@
       <td>{{data.thirdSemesterPoint}}</td>
       <td>{{data.pgpa}}</td>
       <td>{{data.cgpa}}</td>
-      <td nzAlign="center" >
-        <div  nz-row>
-          <div   nz-col nzSpan="8"></div>
-          <div   nz-col nzSpan="4">
-            <i class="edit-btn"    nz-icon nzType="edit"  (click)="editDrawer(data.id)"   nzTheme="outline" nz-tooltip="edit"></i>
-          </div>
-          <div   nz-col nzSpan="4">  </div>
-          <div  nz-col nzSpan="4">
-            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this task?"
-               (nzOnConfirm)="confirm(data.id)" (nzOnCancel)="cancel()"  >
-              <i class="delete-button" nzTooltipColor="red"  nz-icon nzType="delete" nzTheme="outline"  nz-tooltip="delete"></i>
-            </a>
-          </div>
-          <div   nz-col nzSpan="4">  </div>
-        </div>
+      <td nzAlign="center">
+        <i class="edit-btn" nz-icon nzType="edit" (click)="editDrawer(data.id)" nzTheme="outline" nz-tooltip="edit"></i>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a class="delete-button" nz-popconfirm="" nzPopconfirmTitle="Are you sure delete this task?"
+           (nzOnConfirm)="confirm(data.id)" (nzOnCancel)="cancel()">
+          <i nzTooltipColor="red" nz-icon nzType="delete" nzTheme="outline"
+             nz-tooltip="delete"></i>
+        </a>
       </td>
     </tr>
     </tbody>
@@ -85,79 +78,79 @@
     </div>
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>batch</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input type="number" nz-input formControlName="batch"   />
+      <nz-form-control [nzSpan]="18" [nzErrorTip]="userErrorTpl">
+        <input type="number" nz-input formControlName="batch"/>
         <ng-template #userErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please input batch!</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
 
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7"   nzRequired>firstSemester status</nz-form-label>
-        <nz-select   formControlName="firstSemester" nzPlaceHolder="Select firstSemester status"  >
-          <nz-option *ngFor="let data of statusList"    nzValue="{{data.name}}" nzLabel="{{data.name}} "></nz-option>
-        </nz-select>
-      </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>firstSemester status</nz-form-label>
+      <nz-select formControlName="firstSemester" nzPlaceHolder="Select firstSemester status">
+        <nz-option *ngFor="let data of statusList" nzValue="{{data.name}}" nzLabel="{{data.name}} "></nz-option>
+      </nz-select>
+    </nz-form-item>
 
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7"   nzRequired>secondSemester status</nz-form-label>
-        <nz-select   formControlName="secondSemester" nzPlaceHolder="Select secondSemester status"  >
-          <nz-option *ngFor="let data of statusList"    nzValue="{{data.name}}" nzLabel="{{data.name}} "></nz-option>
-        </nz-select>
-      </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>secondSemester status</nz-form-label>
+      <nz-select formControlName="secondSemester" nzPlaceHolder="Select secondSemester status">
+        <nz-option *ngFor="let data of statusList" nzValue="{{data.name}}" nzLabel="{{data.name}} "></nz-option>
+      </nz-select>
+    </nz-form-item>
 
-      <nz-form-item>
-        <nz-form-label [nzSpan]="7"   nzRequired>thirdSemester status</nz-form-label>
-        <nz-select   formControlName="thirdSemester" nzPlaceHolder="Select thirdSemester status"  >
-          <nz-option *ngFor="let data of statusList"    nzValue="{{data.name}}" nzLabel="{{data.name}} "></nz-option>
-        </nz-select>
-      </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>thirdSemester status</nz-form-label>
+      <nz-select formControlName="thirdSemester" nzPlaceHolder="Select thirdSemester status">
+        <nz-option *ngFor="let data of statusList" nzValue="{{data.name}}" nzLabel="{{data.name}} "></nz-option>
+      </nz-select>
+    </nz-form-item>
 
-      <nz-form-item>
+    <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>firstSemesterPoint</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input type="number" formControlName="firstSemesterPoint"   />
+      <nz-form-control [nzSpan]="18" [nzErrorTip]="userErrorTpl">
+        <input nz-input type="number" formControlName="firstSemesterPoint"/>
         <ng-template #userErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please input firstSemesterPoint!</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
 
-      <nz-form-item>
+    <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>secondSemesterPoint</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input type="number" formControlName="secondSemesterPoint"   />
+      <nz-form-control [nzSpan]="18" [nzErrorTip]="userErrorTpl">
+        <input nz-input type="number" formControlName="secondSemesterPoint"/>
         <ng-template #userErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please input secondSemesterPoint!</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
 
-      <nz-form-item>
+    <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>thirdSemesterPoint</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input type="number" formControlName="thirdSemesterPoint"   />
+      <nz-form-control [nzSpan]="18" [nzErrorTip]="userErrorTpl">
+        <input nz-input type="number" formControlName="thirdSemesterPoint"/>
         <ng-template #userErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please input thirdSemesterPoint!</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
 
-      <nz-form-item>
+    <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>PGPA</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input type="number" formControlName="pgpa"   />
+      <nz-form-control [nzSpan]="18" [nzErrorTip]="userErrorTpl">
+        <input nz-input type="number" formControlName="pgpa"/>
         <ng-template #userErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please input PGPA!</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
 
-      <nz-form-item>
+    <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>CGPA</nz-form-label>
-      <nz-form-control [nzSpan]="18"   [nzErrorTip]="userErrorTpl">
-        <input nz-input type="number" formControlName="cgpa"   />
+      <nz-form-control [nzSpan]="18" [nzErrorTip]="userErrorTpl">
+        <input nz-input type="number" formControlName="cgpa"/>
         <ng-template #userErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please input CGPA!</ng-container>
         </ng-template>
@@ -167,9 +160,9 @@
 
     <div formGroupName="systemUser">
       <nz-form-item>
-        <nz-form-label [nzSpan]="7"   nzRequired>Department</nz-form-label>
-        <nz-select   formControlName="id" nzPlaceHolder="Select student userName"  >
-          <nz-option *ngFor="let data of listOfStudent"    nzValue="{{data.id}}" nzLabel="{{data.username}} "></nz-option>
+        <nz-form-label [nzSpan]="7" nzRequired>Department</nz-form-label>
+        <nz-select formControlName="id" nzPlaceHolder="Select student userName">
+          <nz-option *ngFor="let data of listOfStudent" nzValue="{{data.id}}" nzLabel="{{data.username}} "></nz-option>
         </nz-select>
       </nz-form-item>
     </div>
@@ -191,9 +184,9 @@
   nzWidth="25%"
   nzPlacement="right"
   nzTitle="Edit Student"
-  (nzOnClose)="close()" >
+  (nzOnClose)="close()">
 
-  <form *nzDrawerContent  nz-form [formGroup]="editForm" (ngSubmit)="UpdateForm(editForm.value)">
+  <form *nzDrawerContent nz-form [formGroup]="editForm" (ngSubmit)="UpdateForm(editForm.value)">
     <div *ngIf="successMessage">
       <div class="row">
         <div class="col-md-1 "></div>
@@ -215,9 +208,9 @@
 
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>name</nz-form-label>
-      <nz-form-control [nzSpan]="18"    >
-        <input nz-input formControlName="name" ngModel="{{editObject.firstName }}"  />
-        <ng-template  let-control>
+      <nz-form-control [nzSpan]="18">
+        <input nz-input formControlName="name" ngModel="{{editObject.firstName }}"/>
+        <ng-template let-control>
           <ng-container *ngIf="control.hasError('required')">Please input department name!</ng-container>
         </ng-template>
       </nz-form-control>
@@ -226,9 +219,9 @@
 
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired>userName</nz-form-label>
-      <nz-form-control [nzSpan]="18"    >
-        <input nz-input formControlName="code" ngModel="{{editObject.username }}"  />
-        <ng-template   let-control>
+      <nz-form-control [nzSpan]="18">
+        <input nz-input formControlName="code" ngModel="{{editObject.username }}"/>
+        <ng-template let-control>
           <ng-container *ngIf="control.hasError('required')">Please input department code!</ng-container>
         </ng-template>
       </nz-form-control>
@@ -237,7 +230,7 @@
 
     <nz-form-item>
       <nz-form-control [nzOffset]="7" [nzSpan]="18">
-        <button nz-button nzType="primary" >Submit</button>
+        <button nz-button nzType="primary">Submit</button>
       </nz-form-control>
     </nz-form-item>
 

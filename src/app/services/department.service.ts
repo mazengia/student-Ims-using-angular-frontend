@@ -29,11 +29,11 @@ export class DepartmentService {
   {
     return this.http.delete<Department>(`${environment.Url}/department/${departmentId}`  );
   }
-  updateDepartment(departmentId: number, value: any): Observable<any> {
-    return this.http.put<any>(`${environment.Url}/department/${departmentId}`, value );
+  updateDepartment(departmentId: number, department: Department): Observable<Department> {
+    return this.http.put<Department>(`${environment.Url}/department/${departmentId}`, department );
   }
-  findDepartmentById(id: number): Observable<any> {
-    return this.http.get(`${environment.Url}/department/${id}` );
+  findDepartmentById(id: number): Observable<DepartmentResponse> {
+    return this.http.get<DepartmentResponse>(`${environment.Url}/department/${id}` );
   }
   errorHandler(error:any) {
     let errorMessage = '';

@@ -4,12 +4,12 @@ import {DepartmentService} from "../../../services/department.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzDrawerRef} from "ng-zorro-antd/drawer";
 import {finalize, first} from "rxjs/operators";
-import {DepartmentResponse} from "../../../model/department";
-import {ProgramResponse} from "../../../model/program";
-import {ProgramTypeResponse} from "../../../model/programType";
 import {DptService} from "../../../services/dpt.service";
 import {ProgramService} from "../../../services/program.service";
 import {ProgramTypeService} from "../../../services/program-type.service";
+import {Program} from "../../../model/program";
+import {Department} from "../../../model/department";
+import {ProgramType} from "../../../model/programType";
 
 @Component({
   selector: 'app-create-update-dpt',
@@ -20,11 +20,11 @@ export class CreateUpdateDptComponent implements OnInit {
   isAddMode = true;
   loading = false;
   submitted = false;
-  listOfDepartmentData: any;
-  listOfProgramData: any;
-  listOfProgramTypeData: any;
+  departments: Department[];
+  programs: Program[];
+  programType: ProgramType[];
   @Input() value: number;
-  DptForm: FormGroup;
+  dptForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -35,7 +35,7 @@ export class CreateUpdateDptComponent implements OnInit {
     private notification: NzNotificationService,
     private drawerRef: NzDrawerRef<string>
   ) {
-    this.DptForm = this.fb.group({
+    this.dptForm = this.fb.group({
       department: this.fb.group({id: ['', [Validators.required]]}),
       programType: this.fb.group({id: ['', [Validators.required]]}),
       programs: this.fb.group({id: ['', [Validators.required]]})
@@ -44,8 +44,8 @@ export class CreateUpdateDptComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAddMode = !this.value;
-    this.loadDepartments();
     this.loadPrograms();
+    this.loadDepartments();
     this.loadProgramsType();
     if (this.value) {
       this.loadDptById();
@@ -54,21 +54,21 @@ export class CreateUpdateDptComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    if (this.DptForm.invalid) {
+    if (this.dptForm.invalid) {
       return;
     }
 
     this.loading = true;
     if (this.isAddMode) {
-      this.saveDepartment();
+      this.saveDpt();
     } else {
       this.updateDpt();
     }
   }
 
-  saveDepartment(): void {
+  saveDpt(): void {
     this.resetForm();
-    this.dptService.addDpt(this.DptForm.value)
+    this.dptService.addDpt(this.dptForm.value)
       .pipe(finalize(() => {
         this.drawerRef.close()
       }))
@@ -91,31 +91,25 @@ export class CreateUpdateDptComponent implements OnInit {
   }
 
   resetForm(): void {
-    for (const key in this.DptForm.controls) {
-      if (this.DptForm.controls.hasOwnProperty(key)) {
-        this.DptForm.controls[key].markAsDirty();
-        this.DptForm.controls[key].updateValueAndValidity();
+    for (const key in this.dptForm.controls) {
+      if (this.dptForm.controls.hasOwnProperty(key)) {
+        this.dptForm.controls[key].markAsDirty();
+        this.dptForm.controls[key].updateValueAndValidity();
       }
     }
   }
 
   private loadDptById() {
-    this.dptService
-      .findDptById(this.value)
-      .pipe(first())
+    this.dptService.findDptById(this.value)
       .subscribe((res) => {
-        console.log(res)
-        if (!this.isAddMode) {
-          this.DptForm.patchValue(res);
-        }
+          this.dptForm.patchValue(res);
       });
   }
 
   updateDpt(): void {
-
     this.resetForm();
     this.dptService
-      .updateDpt(this.value, this.DptForm.value)
+      .updateDpt(this.value, this.dptForm.value)
       .subscribe(
         data => {
           this.createNotification(
@@ -139,28 +133,31 @@ export class CreateUpdateDptComponent implements OnInit {
   }
 
   loadDepartments() {
-    this.departmentService.getDepartment().subscribe(
-      res => {
-        this.listOfDepartmentData = res._embedded.departmentDTOList;
-      },
-      error => {
-        console.log('error=', error);
-      })
+    this.departmentService.getDepartment()
+      .subscribe(res => {
+          this.departments = res._embedded.departmentDTOList;
+        },
+        error => {
+          console.log('error=', error);
+        })
   }
 
   loadPrograms() {
-    this.programService.getPrograms().subscribe(
-      res => {
-        this.listOfProgramData = res._embedded.programDTOList;
-      },
-      error => {
-        console.log('error=', error);
-      })
+    this.programService.getPrograms()
+      .subscribe(res => {
+          console.log("pro = ", res)
+          this.programs = res._embedded.programDTOList;
+        },
+        error => {
+          console.log('error=', error);
+        })
   }
 
   loadProgramsType() {
-    this.programTypeService.getProgramsType().subscribe(res => {
-      this.listOfProgramTypeData = res._embedded.programTypeDTOList;
+    this.programTypeService.getProgramsType()
+      .subscribe(res => {
+        console.log("protype = ", res)
+      this.programType = res._embedded.programTypeDTOList;
     })
   }
 }

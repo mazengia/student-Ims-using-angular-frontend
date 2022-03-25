@@ -1,12 +1,26 @@
-
 <nz-card [nzTitle]="cardTitle" [nzExtra]="tabExtraTpl">
   <ng-template #cardTitle>
-    <i nz-icon nzType="branches"></i>  Department-Program-Type
+    <i nz-icon nzType="branches"></i> Department-Program-Type
   </ng-template>
   <ng-template #tabExtraTpl>
-    <button nz-button nzType="primary" (click)="openDrawer(undefined)" class="add-button"><i nz-icon nzType="plus"></i>Add Department-Program-Type</button>
+    <button nz-button nzType="primary" (click)="openDrawer(undefined)" class="add-button"><i nz-icon nzType="plus"></i>Add
+      Department-Program-Type
+    </button>
   </ng-template>
-  <nz-table #basicTable [nzData]="dpts">
+  <nz-table
+    #dptTable [nzData]="dpts"
+    nzSize="small"
+    [nzFrontPagination]="false"
+    [nzTotal]="totalElements"
+    [(nzPageIndex)]="pageNumber"
+    [(nzPageSize)]="pageSize"
+    nzShowPagination
+    nzShowSizeChanger
+    nzShowQuickJumper
+    [nzLoading]="loading"
+    (nzPageIndexChange)="loadDpts()"
+    (nzPageSizeChange)="loadDpts(true)"
+  >
     <thead>
     <tr>
       <th>#</th>
@@ -17,26 +31,19 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let data of basicTable.data; let i = index">
-      <td>{{ i+1 }}</td>
+    <tr *ngFor="let data of dptTable.data; let i = index">
+      <td>{{ i + 1 }}</td>
       <td>{{ data.department.name }}</td>
       <td>{{ data.programs.name }}</td>
       <td>{{ data.programType.name }}</td>
-      <td nzAlign="center" >
-        <div  nz-row>
-          <div   nz-col nzSpan="8"></div>
-          <div   nz-col nzSpan="4">
-            <i class="edit-btn"    nz-icon nzType="edit"  (click)="openDrawer(data.id)"   nzTheme="outline" nz-tooltip="edit"></i>
-          </div>
-          <div   nz-col nzSpan="4">  </div>
-          <div  nz-col nzSpan="4">
-            <a nz-popconfirm="" nzPopconfirmTitle="Are you sure delete this task?"
-               (nzOnConfirm)="deleteDpt(data.id)" (nzOnCancel)="cancel()"  >
-              <i class="delete-button" nzTooltipColor="red"  nz-icon nzType="delete" nzTheme="outline"  nz-tooltip="delete"></i>
-            </a>
-          </div>
-          <div   nz-col nzSpan="4">  </div>
-        </div>
+      <td nzAlign="center">
+        <i class="edit-btn" nz-icon nzType="edit" (click)="openDrawer(data.id)" nzTheme="outline" nz-tooltip="edit"></i>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a class="delete-button" nz-popconfirm="" nzPopconfirmTitle="Are you sure delete this task?"
+           (nzOnConfirm)="deleteDpt(data.id)" (nzOnCancel)="cancel()">
+          <i  nzTooltipColor="red" nz-icon nzType="delete" nzTheme="outline"
+             nz-tooltip="delete"></i>
+        </a>
       </td>
     </tr>
     </tbody>

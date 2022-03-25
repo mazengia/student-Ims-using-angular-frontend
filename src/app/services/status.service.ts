@@ -24,10 +24,10 @@ export class StatusService {
   }
   deleteStatus(id:number):Observable<any>
   {
-    return this.http.post(`${environment.Url}/${id}` ,{ responseType: 'text' }  );
+    return this.http.delete(`${environment.Url}/status/${id}` ,{ responseType: 'text' }  );
   }
   updateStatus(id: number, value: any): Observable<any> {
-    return this.http.put(`${environment.Url}/${id}`, value,{ responseType: 'text' });
+    return this.http.put(`${environment.Url}/status/${id}`, value,{ responseType: 'text' });
   }
   findStatusById(id: number): Observable<any> {
     return this.http.get(`${environment.Url}/status/${id}` );

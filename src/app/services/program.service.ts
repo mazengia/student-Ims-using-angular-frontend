@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {ProgramResponse} from '../model/program';
+import {Program, ProgramResponse} from '../model/program';
 import {environment} from '../../environments/environment';
 
 @Injectable({
@@ -18,19 +18,19 @@ export class ProgramService {
       .append('size', `${pageSize}`);
     return this.http.get<ProgramResponse>(`${environment.Url}/programs`,{params} );
   }
-  addProgram(inputName:any):Observable<any>
+  addProgram(program:Program):Observable<Program>
   {
-    return this.http.post(`${environment.Url}/programs`,inputName ,{ responseType: 'text' }  );
+    return this.http.post<Program>(`${environment.Url}/programs`,program    );
   }
-  deleteProgram(id:number):Observable<any>
+  deleteProgram(id:number):Observable<Program>
   {
-    return this.http.post(`${environment.Url}/${id}` ,{ responseType: 'text' }  );
+    return this.http.delete<Program>(`${environment.Url}/programs/${id}`    );
   }
-  updateProgram(id: number, value: any): Observable<any> {
-    return this.http.put(`${environment.Url}/${id}`, value,{ responseType: 'text' });
+  updateProgram(id: number, value: Program): Observable<Program> {
+    return this.http.put<Program>(`${environment.Url}/programs/${id}`, value );
   }
-  findProgramById(id: number): Observable<any> {
-    return this.http.get(`${environment.Url}/programs/${id}` );
+  findProgramById(id: number): Observable<ProgramResponse> {
+    return this.http.get<ProgramResponse>(`${environment.Url}/programs/${id}` );
   }
 }
 

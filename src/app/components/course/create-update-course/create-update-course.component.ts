@@ -16,7 +16,7 @@ export class CreateUpdateCourseComponent implements OnInit {
   isAddMode = true;
   loading = false;
   submitted = false;
-  departments: Department[] = [] ;
+  departments: Department[]   ;
   @Input() value: number;
   courseForm: FormGroup;
 
@@ -87,6 +87,7 @@ export class CreateUpdateCourseComponent implements OnInit {
   loadDepartments() {
     this.departmentService.getDepartment().subscribe(
       res => {
+        console.log("course = ",res)
         this.departments = res._embedded.departmentDTOList;
       }
     )

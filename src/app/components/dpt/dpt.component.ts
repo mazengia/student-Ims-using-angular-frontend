@@ -27,7 +27,7 @@ export class DptComponent implements  OnInit {
   loading= true;
   // @ts-ignore
   listOfData: DataItem[] = [];
-  dpts: Dpt[] = [];
+  dpts: Dpt[];
 
   constructor(
     private notification: NzNotificationService,
@@ -40,6 +40,24 @@ export class DptComponent implements  OnInit {
     this.loadDpts();
   }
 
+  loadDpts(reset: boolean = false) {
+    if (reset) {
+      this.pageNumber = 1;
+    }
+    this.loading = true;
+    this.dptService.getDpt(this.pageNumber - 1, this.pageSize).subscribe(
+      res => {
+        this.loading = false;
+        this.dpts = res._embedded.dptDTOList;
+        this.totalElements = res.page.totalElements;
+        this.filterDpts();
+      },
+      error => {
+        console.log("error = ", error)
+      }
+    )
+
+  }
 
   openDrawer(id: number): void {
     const drawerRef = this.drawerService.create<CreateUpdateDptComponent,
@@ -63,24 +81,7 @@ export class DptComponent implements  OnInit {
     // this.nzMessageService.info('click cancel');
   }
 
-  loadDpts(reset: boolean = false) {
-    if (reset) {
-      this.pageNumber = 1;
-    }
-    this.loading = true;
-    this.dptService.getDpt(this.pageNumber - 1, this.pageSize).subscribe(
-      res => {
-        this.loading = false;
-        this.dpts = res._embedded.dptDTOList;
-        this.totalElements = res.page.totalElements;
-        this.filterDpts();
-      },
-      error => {
-        console.log("error = ", error)
-      }
-    )
 
-  }
 
   searchDpts(): void {
     this.visible = false;

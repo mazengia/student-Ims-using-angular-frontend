@@ -18,7 +18,7 @@ export class CreateUpdateStudentComponent implements OnInit {
   submitted = false;
   pageSize = 10;
   pageNumber = 1;
-  dpts: Dpt[]=[];
+  dpts: Dpt[];
   @Input() value: number;
   addStudentForm: FormGroup;
 
