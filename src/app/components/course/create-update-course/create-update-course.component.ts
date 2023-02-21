@@ -88,7 +88,7 @@ export class CreateUpdateCourseComponent implements OnInit {
     this.departmentService.getDepartment().subscribe(
       res => {
         console.log("course = ",res)
-        this.departments = res._embedded.departmentDTOList;
+        this.departments = res._embedded.departmentDTOes;
       }
     )
 

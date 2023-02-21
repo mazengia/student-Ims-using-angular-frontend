@@ -69,8 +69,8 @@ export class DepartmentComponent implements OnInit {
     }
     this.departmentService.getDepartment(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
-        // console.log(res)
-        this.departments = res._embedded.departmentDTOList;
+        console.log(res)
+        this.departments = res._embedded.departmentDTOes;
         this.totalElements = res.page.totalElements;
         this.filterDepartments();
         this.isDataFound = true;

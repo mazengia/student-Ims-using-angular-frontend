@@ -1,25 +1,13 @@
 .row-center {
-  text-align:center;
   height: 100vh;
   position: relative;
   .col-center {
-    text-align:left;
     .login-layout {
-	  background-color: #f1f1f1;
-	  padding: 20px;
-	  border-radius: 4px;
-	  border-color: #00a3ff;
-	  border-width: 2px;
-	  width: 400px;
 	  position: absolute;
 	  top: 50%;
 	  left: 50%;
 	  transform: translate(-50%, -60%);
-	  .login-title {
-	  	text-align: center;
-	  	color: rgb(12, 81, 160);
-	  	font-size: 24px;
-	  }
+
 	}
   }
 }

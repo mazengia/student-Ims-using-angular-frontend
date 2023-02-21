@@ -135,7 +135,7 @@ export class CreateUpdateDptComponent implements OnInit {
   loadDepartments() {
     this.departmentService.getDepartment()
       .subscribe(res => {
-          this.departments = res._embedded.departmentDTOList;
+          this.departments = res._embedded.departmentDTOes;
         },
         error => {
           console.log('error=', error);

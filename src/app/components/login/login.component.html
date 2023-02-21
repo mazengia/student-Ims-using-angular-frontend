@@ -1,57 +1,46 @@
-<div class="container">
+
   <div class="row row-center">
     <div class="col-center">
       <div class="login-layout">
-
-        <h3 class="login-title">Login Page</h3>
-        <form *ngIf="!isLoggedIn" nz-form name="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <nz-form-item>
-            <nz-form-label [nzSpan]="4">UserName</nz-form-label>
+        <form  nzLayout="vertical" nz-form *ngIf="!isLoggedIn"  [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <nz-form-item style="align-items: center">
+            <nz-form-label >UserName</nz-form-label>
             <nz-form-control
               nzHasFeedback
-              [nzSpan]="20"
-              nzErrorTip="error"
-            >
-              <nz-input-group [nzSuffix]="suffixUsername">
-                <input
+              nzErrorTip="username is required">
+              <nz-input-group nzPrefixIcon="user" [nzSuffix]="suffixUsername">
+                <input  style="text-align: center"
                   nz-input
                   placeholder="username"
                   name="username"
                   formControlName="username"
-                  required
-                />
-
-
+                  required/>
               </nz-input-group>
               <ng-template #suffixUsername>
-                <i
-                  nz-icon
-                  class="ant-input-clear-icon"
-                  nzTheme="fill"
-                  nzType="close-circle"
-                  *ngIf="loginForm.controls.username.value.length>0"
-                  (click)="loginForm.controls.username.setValue('')"
-                ></i>
+                <i nz-icon
+                   class="ant-input-clear-icon"
+                   nzTheme="fill"
+                   nzType="close-circle"
+                   *ngIf="loginForm.controls.username.value.length>0"
+                   (click)="loginForm.controls.username.setValue('')">
+                </i>
               </ng-template>
 
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSpan]="4">password</nz-form-label>
+          <nz-form-item style="align-items: center">
+            <nz-form-label>password</nz-form-label>
             <nz-form-control
               nzHasFeedback
-              [nzSpan]="20"
-              nzErrorTip="password error"
-            >
-              <nz-input-group [nzSuffix]="suffixPassword">
-                <input
+              nzErrorTip="password is required">
+              <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixPassword">
+                <input style="text-align: center"
                   nz-input
                   name="password"
                   formControlName="password"
                   [type]="passwordVisible ? 'text' : 'password'"
                   placeholder="password"
-                  required
-                />
+                  required/>
               </nz-input-group>
               <ng-template #suffixPassword>
                 <i
@@ -60,24 +49,19 @@
                   nzTheme="fill"
                   nzType="close-circle"
                   *ngIf="loginForm.controls.password.value.length>0"
-                  (click)="loginForm.controls.password.setValue('')"
-                ></i>
-                <i
-                  nz-icon
-                  [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
-                  (click)="passwordVisible = !passwordVisible"
-                ></i>
+                  (click)="loginForm.controls.password.setValue('')">
+                </i>
+                <i nz-icon
+                   [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                   (click)="passwordVisible = !passwordVisible">
+
+                </i>
               </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-control [nzSpan]="20" [nzOffset]="4">
               <div nz-row class="login-form-margin">
-                <div nz-col [nzSpan]="12">
-                  <label nz-checkbox formControlName="remember">
-                    <span>remember</span>
-                  </label>
-                </div>
                 <div nz-col [nzSpan]="12" style="text-align: right;">
                   <a class="login-form-forgot">forget?</a>
                 </div>
@@ -98,10 +82,9 @@
             </nz-form-control>
           </nz-form-item>
         </form>
-
       </div>
     </div>
   </div>
-</div>
+
 
 

@@ -8,7 +8,7 @@ export class Department{
 }
 export  class DepartmentResponse{
   _embedded: {
-    departmentDTOList: Department[];
+    departmentDTOes: Department[];
   };
   page:page;
 }
