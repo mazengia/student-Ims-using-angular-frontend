@@ -1,7 +1,7 @@
-import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
- import {CourseService} from '../../services/course.service';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {CourseService} from '../../services/course.service';
 import {Course} from '../../model/course';
- import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
+import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {CreateUpdateCourseComponent} from "./create-update-course/create-update-course.component";
 
@@ -72,7 +72,7 @@ export class CourseComponent  implements OnInit {
     this.courseService.getCourse(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
         this.loading = false;
-        this.courses = res._embedded.courseDTOList;
+        this.courses = res._embedded.courseDTOes;
         this.totalElements = res.page.totalElements;
         this.filterCourse();
       },

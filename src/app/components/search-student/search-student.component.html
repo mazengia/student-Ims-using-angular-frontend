@@ -1,0 +1,73 @@
+<form nz-form [formGroup]="dptForm"
+      nzLayout="vertical"
+      (ngSubmit)="onSubmit()">
+  <div nz-row>
+    <div nz-col nzSpan="12">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Department</nz-form-label>
+        <nz-form-control [nzSpan]="24" nzErrorTip="Please Select Department  !">
+          <nz-select formControlName="id" (ngModelChange)="ngModelChangeDepartment($event)"
+                     nzPlaceHolder="Select Department  "
+                     nzAllowClear
+                     nzShowSearch>
+            <nz-option *ngFor="let data of departments"
+                       nzValue="{{data.id}}"
+                       nzLabel="{{data.name}}"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col nzSpan="12">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Program</nz-form-label>
+        <nz-form-control [nzSpan]="24" nzErrorTip="Please Select Program  !">
+          <nz-select formControlName="program" (ngModelChange)="ngModelChangeDpt($event)"
+                     nzPlaceHolder="Select Program"
+                     nzAllowClear
+                     nzShowSearch>
+            <nz-option *ngFor="let data of program"
+                       nzValue="{{data.id}}"
+                       nzLabel="{{data.programs?.name}} |
+                               {{data.certifications?.name}}">
+              <nz-divider nzType="vertical"></nz-divider>
+              <strong>{{data.certifications?.name}}</strong>
+              <nz-divider nzType="vertical"></nz-divider>
+              {{data.programs?.name}}
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</form>
+<nz-table #studentTable [nzData]="students"
+          nzSize="small"
+          [nzFrontPagination]="false"
+          [(nzPageIndex)]="pageNumber"
+          [(nzPageSize)]="pageSize"
+          nzShowPagination
+          nzShowSizeChanger
+          nzShowQuickJumper >
+
+  <thead>
+  <tr>
+    <th>#</th>
+    <th>student FulName</th>
+    <th>User Name</th>
+    <th>Email</th>
+    <th>Department</th>
+    <th>Certifications</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of studentTable.data; let i = index">
+    <td>{{ i + 1 }}</td>
+    <td>{{ data.firstName}} {{data.lastName}}</td>
+    <td>{{data.username}}</td>
+    <td>{{ data.email }}</td>
+    <td>{{data.dpt.department.name}}</td>
+    <td>{{data.dpt.certifications.name}} {{data.dpt.programs.name}}</td>
+  </tr>
+  </tbody>
+</nz-table>

@@ -6,7 +6,7 @@ export class Roles{
 }
 export class RolesResponse {
   _embedded: {
-    rolesDTOList: Roles[];
+    rolesDTOes: Roles[];
   };
   page:page;
 }

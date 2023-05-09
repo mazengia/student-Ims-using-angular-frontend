@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Roles, RolesResponse} from '../model/Roles';
-import {TokenStorageService} from "../config/_services/token-storage.service";
+
 const httpOptions = { headers: new HttpHeaders(
     { 'Content-Type': 'application/json',
       'Accept': 'application/json',

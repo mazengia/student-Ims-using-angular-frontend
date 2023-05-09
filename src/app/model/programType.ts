@@ -6,7 +6,7 @@ export class ProgramType{
 }
 export class ProgramTypeResponse {
   _embedded: {
-    programTypeDTOList: ProgramType[];
+    programDTOes: ProgramType[];
   };
   page:page;
 }

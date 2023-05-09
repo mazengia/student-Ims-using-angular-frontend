@@ -17,18 +17,26 @@
           <li nz-menu-item nzMatchRouter>
             <a routerLink="welcome">Welcome</a>
           </li>
-
         </ul>
       </li>
-
-      <li nz-submenu nzOpen nzTitle="Students" nzIcon="dashboard">
+      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
         <ul>
           <li nz-menu-item nzMatchRouter>
             <a routerLink="student-enroll">Enroll Student</a>
           </li>
-
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="student-list">Students</a>
+          </li>
         </ul>
       </li>
+<!--      <li nz-submenu nzOpen nzTitle="Students" nzIcon="dashboard">-->
+<!--        <ul>-->
+<!--          <li *ngFor="let data of departments" nz-menu-item nzMatchRouter>-->
+<!--&lt;!&ndash;            <a  (click)="goToPage( data.id )" >{{ data.name }}</a>&ndash;&gt;-->
+<!--            <a routerLink="student/{{ data.id }}">{{ data.name }}</a>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </li>-->
 
       <li nz-submenu nzOpen nzTitle="Maintenance" nzIcon="form">
         <ul>
@@ -43,10 +51,10 @@
             <a routerLink="course">Course</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="program">Programs</a>
+            <a routerLink="program">Certification</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="program-type">program-type</a>
+            <a routerLink="program-type">program</a>
           </li>
 
           <li nz-menu-item nzMatchRouter>
@@ -73,7 +81,7 @@
       {{username}}({{roles}})
       <i nz-icon nzType="down"></i>
     </a>
-    <nz-dropdown-menu  style="margin-top: 40px" #menu="nzDropdownMenu">
+    <nz-dropdown-menu style="margin-top: 40px" #menu="nzDropdownMenu">
       <ul nz-menu nzSelectable>
       <li nzicon="logout" class="ant-menu-submenu ant-menu-submenu-vertical">
         <div class="ant-menu-submenu-title">

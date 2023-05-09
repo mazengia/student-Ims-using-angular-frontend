@@ -1,11 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DepartmentService} from "../../../services/department.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzDrawerRef} from "ng-zorro-antd/drawer";
 import {finalize, first} from "rxjs/operators";
 import {DptService} from "../../../services/dpt.service";
 import {Dpt} from "../../../model/dpt";
+import {StudentService} from "../../../services/student.service";
+import {Student} from "../../../model/student";
 
 @Component({
   selector: 'app-create-update-student',
@@ -18,13 +19,14 @@ export class CreateUpdateStudentComponent implements OnInit {
   submitted = false;
   pageSize = 10;
   pageNumber = 1;
+  students: Student[];
   dpts: Dpt[];
   @Input() value: number;
   addStudentForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private departmentService: DepartmentService,
+    private studentService: StudentService,
     private notification: NzNotificationService,
     private dptService: DptService,
     private drawerRef: NzDrawerRef<string>
@@ -45,9 +47,9 @@ export class CreateUpdateStudentComponent implements OnInit {
   ngOnInit(): void {
     this.isAddMode = !this.value;
     if (this.value) {
-      this.loadDepartmentById();
+      this.loadStudentById();
     }
-    this.loadDpts();
+      this.loadDpts();
   }
 
   onSubmit() {
@@ -66,7 +68,7 @@ export class CreateUpdateStudentComponent implements OnInit {
 
   saveDepartment(): void {
     this.resetForm();
-    this.departmentService.addDepartment(this.addStudentForm.value)
+    this.studentService.addStudent(this.addStudentForm.value)
       .pipe(finalize(() => {
         this.drawerRef.close()
       }))
@@ -97,13 +99,15 @@ export class CreateUpdateStudentComponent implements OnInit {
     }
   }
 
-  private loadDepartmentById() {
-    this.departmentService
-      .findDepartmentById(this.value)
+  private loadStudentById() {
+    this.studentService
+      .findStudentById(this.value)
       .pipe(first())
       .subscribe((res) => {
+        console.log(this.students)
         if (!this.isAddMode) {
           this.addStudentForm.patchValue(res);
+          this.students= [res]
         }
       });
   }
@@ -111,8 +115,8 @@ export class CreateUpdateStudentComponent implements OnInit {
   updateDepartment(): void {
 
     this.resetForm();
-    this.departmentService
-      .updateDepartment(this.value, this.addStudentForm.value)
+    this.studentService
+      .updateStudent(this.value, this.addStudentForm.value)
       .subscribe(
         data => {
           this.createNotification(
@@ -142,7 +146,7 @@ export class CreateUpdateStudentComponent implements OnInit {
     this.dptService.getDpt(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
         this.loading = false;
-        this.dpts = res._embedded.dptDTOList;
+        this.dpts = res._embedded.dptDTOes;
       },
       error => {
         console.log("error = ", error)

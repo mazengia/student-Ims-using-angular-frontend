@@ -1,16 +1,15 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {Program} from '../../model/program';
+import {Certification} from '../../model/certification';
 import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {ProgramService} from "../../services/program.service";
-import {CreateUpdateProgramComponent} from "./create-update-program/create-update-program.component";
+import {CreateUpdateCertificationComponent} from "./create-update-certification/create-update-certification.component";
+import {CertificationService} from "../../services/certificationervice.service";
 
 @Component({
-  selector: 'app-program',
-  templateUrl: './program.component.html',
-  styleUrls: ['./program.component.scss']
+  selector: 'app-certification',
+  templateUrl: './certification.component.html'
 })
-export class ProgramComponent implements OnInit {
+export class CertificationComponent implements OnInit {
   @ViewChild(
     'drawerTemplate',
     {static: false})
@@ -26,27 +25,27 @@ export class ProgramComponent implements OnInit {
   loading = true;
   // @ts-ignore
   listOfData: DataItem[] = [];
-  programs: Program[] = [];
-  listOfProgramsData: any;
+  certification: Certification[] = [];
+  listOfCertificationData: any;
 
   constructor(
     private notification: NzNotificationService,
-    private programService: ProgramService,
+    private certificationService: CertificationService,
     private drawerService: NzDrawerService,
   ) {
   }
 
   ngOnInit(): void {
-    this.loadPrograms();
+    this.loadCertifications();
   }
 
 
   openDrawer(id: number): void {
-    const drawerRef = this.drawerService.create<CreateUpdateProgramComponent,
+    const drawerRef = this.drawerService.create<CreateUpdateCertificationComponent,
       { id: number }>({
-      nzTitle: `${id ? 'Update' : 'Create'} Programs`,
+      nzTitle: `${id ? 'Update' : 'Create'} Certification`,
       nzWidth:400,
-      nzContent: CreateUpdateProgramComponent,
+      nzContent: CreateUpdateCertificationComponent,
       nzContentParams: {
         value: id,
       },
@@ -55,7 +54,7 @@ export class ProgramComponent implements OnInit {
     });
 
     drawerRef.afterClose.subscribe(() => {
-      this.loadPrograms()
+      this.loadCertifications()
     })
   }
 
@@ -63,18 +62,18 @@ export class ProgramComponent implements OnInit {
     // this.nzMessageService.info('click cancel');
   }
 
-  loadPrograms(reset: boolean = false) {
+  loadCertifications(reset: boolean = false) {
     if (reset) {
       this.pageNumber = 1;
     }
     this.loading = true;
-    this.programService.getPrograms(this.pageNumber - 1, this.pageSize)
+    this.certificationService.getCertification(this.pageNumber - 1, this.pageSize)
       .subscribe(res => {
         this.loading = false;
-        // console.log(res)
-        this.programs = res._embedded.programDTOList;
+        console.log("certificationDTOes",res)
+        this.certification = res._embedded.certificationDTOes;
         this.totalElements = res.page.totalElements;
-        this.filterPrograms();
+        this.filterCertification();
       },
       error => {
         console.log("error = ", error)
@@ -83,36 +82,36 @@ export class ProgramComponent implements OnInit {
 
   }
 
-  searchPrograms(): void {
+  searchCertification(): void {
     this.visible = false;
-    this.programs = this.listOfData.filter(
-      (item: Program) => item.name.indexOf(this.searchValue) !== -1);
+    this.certification = this.listOfData.filter(
+      (item: Certification) => item.name.indexOf(this.searchValue) !== -1);
   }
 
-  filterPrograms() {
-    for (const item of this.programs) {
+  filterCertification() {
+    for (const item of this.certification) {
       const variable = {
         id: item.id,
         name: item.name
       }
       this.listOfData.push(variable);
-      this.listOfProgramsData = [...this.listOfData];
+      this.listOfCertificationData = [...this.listOfData];
     }
   }
 
   resetBusiness(): void {
     this.searchValue = '';
-    this.searchPrograms();
+    this.searchCertification();
   }
 
-  deletePrograms(id?: number) {
-    this.programService.deleteProgram(id).subscribe(
+  deleteCertification(id?: number) {
+    this.certificationService.deleteCertification(id).subscribe(
       (data) => {
-        this.loadPrograms();
+        this.loadCertifications();
         this.createNotification(
           'success',
-          'Programs',
-          'Programs Successfully Deleted'
+          'Certification',
+          'Certification Successfully Deleted'
         );
       },
       (error) => {
@@ -137,8 +136,8 @@ export class ProgramComponent implements OnInit {
 
   search(): void {
     this.visible = false;
-    this.programs = this.listOfData.filter(
-      (item: Program) => item.name.indexOf(this.searchValue) !== -1
+    this.certification = this.listOfData.filter(
+      (item: Certification) => item.name.indexOf(this.searchValue) !== -1
     );
   }
 }

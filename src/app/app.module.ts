@@ -15,27 +15,35 @@ import {NzIconModule} from "ng-zorro-antd/icon";
 import {en_US, NZ_I18N} from "ng-zorro-antd/i18n";
 import {MainAppModule} from "./components/main-app/main-app.module";
 import {authInterceptorProviders} from "./config/auth.interceptor";
+import { CreateUpdateEnrolledStudentComponent } from './components/student-enrol/create-update-enrolled-student/create-update-enrolled-student.component';
+import {NzFormModule} from "ng-zorro-antd/form";
+import {NzSelectModule} from "ng-zorro-antd/select";
+import {NzInputModule} from "ng-zorro-antd/input";
 
 registerLocaleData(zh);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CreateUpdateEnrolledStudentComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    LoginModule,
-    MainAppModule,
-    FormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    NzButtonModule,
-    NzIconModule,
-    NzMenuModule,
-    NzToolTipModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        LoginModule,
+        MainAppModule,
+        FormsModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        NzButtonModule,
+        NzIconModule,
+        NzMenuModule,
+        NzToolTipModule,
+        NzFormModule,
+        NzSelectModule,
+        NzInputModule
+    ],
   providers: [
     {provide: NZ_I18N, useValue: en_US},
     authInterceptorProviders
@@ -43,5 +51,8 @@ registerLocaleData(zh);
 
   bootstrap: [AppComponent]
 })
+// @ts-ignore
 export class AppModule {
 }
+
+// @ts-ignore

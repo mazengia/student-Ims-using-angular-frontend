@@ -42,13 +42,15 @@
           nzAllowClear
           nzShowSearch>
           <nz-option nzCustomContent *ngFor="let data of dpts" [nzValue]="data.id"
-                     nzLabel="{{data.department.name}}( {{data?.programs.name}} )">
+                     nzLabel=" {{data.department?.name}} |
+                               {{data.certifications?.name}} |
+                               {{data.programs?.name}}">
             <nz-divider nzType="vertical"></nz-divider>
-            <strong>{{data?.department.name}}</strong>
+            <strong>{{data.department?.name}}</strong>
             <nz-divider nzType="vertical"></nz-divider>
-            <strong>{{data?.programs.name}}</strong>
+            <strong>{{data.certifications?.name}}</strong>
             <nz-divider nzType="vertical"></nz-divider>
-            {{data?.programType.name}}
+            {{data.programs?.name}}
           </nz-option>
         </nz-select>
       </nz-form-control>

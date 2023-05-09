@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {DepartmentResponse} from '../model/department';
 import {environment} from '../../environments/environment';
 import {StudentResponse} from '../model/student';
 
@@ -16,7 +15,7 @@ export class StudentService {
     const params =  new HttpParams()
       .append('pageNumber',`${pageNumber}`)
       .append('pageSize',`${pageSize}`);
-    return this.http.get<StudentResponse>(`${environment.Url}/student`, {params} );
+    return this.http.get<StudentResponse>(`${environment.Url}/users`, {params} );
   }
 
   addStudent(inputName:any):Observable<any>
@@ -31,6 +30,6 @@ export class StudentService {
     return this.http.put(`${environment.Url}student/${id}`, value,{ responseType: 'text' });
   }
   findStudentById(id: number): Observable<any> {
-    return this.http.get(`${environment.Url}/student/${id}` );
+    return this.http.get(`${environment.Url}/users/${id}` );
   }
 }

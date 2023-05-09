@@ -2,6 +2,13 @@ import {AfterContentChecked, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {StudentService} from '../../services/student.service';
 import {EnrolStudentService} from '../../services/enrolStudent.service';
+import {CreateUpdateDptComponent} from "../dpt/create-update-dpt/create-update-dpt.component";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {DptService} from "../../services/dpt.service";
+import {NzDrawerService} from "ng-zorro-antd/drawer";
+import {
+  CreateUpdateEnrolledStudentComponent
+} from "./create-update-enrolled-student/create-update-enrolled-student.component";
 
 @Component({
   selector: 'app-student-enrol',
@@ -29,7 +36,11 @@ export class StudentEnrolComponent implements OnInit, AfterContentChecked  {
   editForm: FormGroup;
   id: FormControl;
   visibleEditDrawer = false;
-  constructor(private fb: FormBuilder, private studentService:StudentService ,private enrolStudentService:EnrolStudentService) {
+  constructor(private fb: FormBuilder,
+              private studentService:StudentService ,
+              private enrolStudentService:EnrolStudentService,
+              private notification: NzNotificationService,
+              private drawerService: NzDrawerService,) {
 
     this.addStudentForm = this.fb.group({
       firstSemester: ['', Validators.required],
@@ -56,9 +67,7 @@ export class StudentEnrolComponent implements OnInit, AfterContentChecked  {
   }
 
   ngOnInit(): void {
-    this.loadStatus();
     this.loadEnrolledStudent();
-    this.loadStudent();
     this.id = new FormControl();
     this.deleteForm = new FormGroup({
       id: this.id
@@ -66,38 +75,31 @@ export class StudentEnrolComponent implements OnInit, AfterContentChecked  {
   }
 
   loadEnrolledStudent() {
-    this.enrolStudentService.getStudent()
+    this.enrolStudentService.getEnrolledStudent()
       .subscribe(res => {
-          this.listOfStudentData = res;
-          console.log('res = ', res)
+          console.log('enroll res = ', res)
+          this.listOfStudentData = res._embedded.enrollDtoes;
         },
         error => {
           console.log('error=', error);
         })
   }
-  loadStudent() {
-    this.studentService.getStudent()
-      .subscribe(res => {
-          this.listOfStudent = res._embedded.studentDTOList;
-          console.log('student = ', res)
-        },
-        error => {
-          console.log('error=', error);
-        })
-  }
+open(id: number): void {
+    const drawerRef = this.drawerService.create<CreateUpdateEnrolledStudentComponent,
+      { id: number }>({
+      nzTitle: `${id ? 'Update' : 'Create'} EnrolledStudent`,
+      nzWidth:400,
+      nzContent: CreateUpdateEnrolledStudentComponent,
+      nzContentParams: {
+        value: id,
+      },
+      nzClosable: true,
+      nzKeyboard: true,
+    });
 
-  loadStatus() {
-    this.enrolStudentService.getStatus()
-      .subscribe(res => {
-          this.statusList = res;
-        },
-        error => {
-          console.log('error=', error);
-        })
-  }
-
-  open(): void {
-    this.visibleDrawer = true;
+    drawerRef.afterClose.subscribe(() => {
+      this.loadEnrolledStudent()
+    })
   }
 
   close(): void {
@@ -108,24 +110,6 @@ export class StudentEnrolComponent implements OnInit, AfterContentChecked  {
 
   // forms inside drawer
 
-  enrollStudent(): void {
-    for (const key in this.addStudentForm.controls) {
-      if (this.addStudentForm.controls.hasOwnProperty(key)) {
-        this.addStudentForm.controls[key].markAsDirty();
-        this.addStudentForm.controls[key].updateValueAndValidity();
-      }
-    }
-    console.log(this.addStudentForm.value)
-    this.enrolStudentService.enrolStudent(this.addStudentForm.value).subscribe(
-      data => {
-        console.log(data);
-        this.successMessage = data + ' is added successfully';
-      },
-      error => {
-        this.errorMessage = error
-      }
-    )
-  }
 
   resetForm(e: MouseEvent): void {
     e.preventDefault();
@@ -152,40 +136,8 @@ export class StudentEnrolComponent implements OnInit, AfterContentChecked  {
     this.listOfStudentData = this.listOfData.filter((item: DataItem) => item.name.indexOf(this.searchValue) !== -1);
   }
 
-  editDrawer(id: number): void {
-    this.visibleEditDrawer = true;
-    console.log('edited id=', id)
-    this.enrolStudentService.findStudentById(id).subscribe(
-      res => {
-        this.editObject = res ;
-        console.log(res)
-      },
-      error => {
-        console.log('error=', error);
-      })
-
-  }
 
 
-  UpdateForm(value: { name: string, code: string }): void {
-    console.log('value=', value)
-    console.log('id=', this.editObject.id)
-    for (const key in this.editForm.controls) {
-      if (this.editForm.controls.hasOwnProperty(key)) {
-        this.editForm.controls[key].markAsDirty();
-        this.editForm.controls[key].updateValueAndValidity();
-      }
-    }
-    this.enrolStudentService.updateStudent(this.editObject.id, value).subscribe(
-      data => {
-        this.successMessage = 'name whose id' + this.editObject.id + ' is updated successfully';
-        window.location.reload()
-      },
-      error => {
-        this.errorMessage = error
-      }
-    )
-  }
 
   confirm(id: number) {
     console.log('id=', id)

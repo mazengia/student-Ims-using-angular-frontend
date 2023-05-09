@@ -1,0 +1,64 @@
+<form   nz-form [formGroup]="addStudentForm" (ngSubmit)="ngOnSubmit()">
+  <div formGroupName="semesters">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>semesters</nz-form-label>
+      <nz-select formControlName="id" nzPlaceHolder="Select semesters">
+        <nz-option *ngFor="let data of semestersList" nzValue="{{data.id}}" nzLabel="{{data.name}} "></nz-option>
+      </nz-select>
+    </nz-form-item>
+  </div>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>PGPA</nz-form-label>
+    <nz-form-control [nzSpan]="18" [nzErrorTip]="userErrorTpl">
+      <input nz-input type="number" formControlName="pgpa"/>
+      <ng-template #userErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Please input PGPA!</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>CGPA</nz-form-label>
+    <nz-form-control [nzSpan]="18" [nzErrorTip]="userErrorTpl">
+      <input nz-input type="number" formControlName="cgpa"/>
+      <ng-template #userErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">Please input CGPA!</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+
+  <div formGroupName="student">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>Student Name</nz-form-label>
+      <nz-select formControlName="id" nzPlaceHolder="Select student userName">
+        <nz-option *ngFor="let data of listOfStudent"
+                   nzValue="{{data.id}}"
+                   nzLabel="{{data.firstName}} {{data.lastName}} "></nz-option>
+      </nz-select>
+    </nz-form-item>
+  </div>
+
+  <div formGroupName="certificationYear">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>CertificationYear</nz-form-label>
+      <nz-select formControlName="id" nzPlaceHolder="Select CertificationYear">
+        <nz-option *ngFor="let data of certificationYearList  " nzValue="{{data.id}}" nzLabel="{{data.name}} "></nz-option>
+      </nz-select>
+    </nz-form-item>
+  </div>
+  <div formGroupName="sections">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired>Sections</nz-form-label>
+      <nz-select formControlName="id" nzPlaceHolder="Select Sections">
+        <nz-option *ngFor="let data of sectionsList" nzValue="{{data.id}}" nzLabel="{{data.name}} "></nz-option>
+      </nz-select>
+    </nz-form-item>
+  </div>
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="18">
+      <button nz-button nzType="primary" [disabled]="!addStudentForm.valid">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

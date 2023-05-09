@@ -1,5 +1,4 @@
-
-import { Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {DptService} from '../../services/dpt.service';
 import {NzDrawerRef, NzDrawerService} from "ng-zorro-antd/drawer";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -48,15 +47,17 @@ export class DptComponent implements  OnInit {
     this.dptService.getDpt(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
         this.loading = false;
-        this.dpts = res._embedded.dptDTOList;
-        this.totalElements = res.page.totalElements;
+        console.log(res)
+        if (res._embedded) {
+          this.dpts = res._embedded.dptDTOes;
+          this.totalElements = res.page.totalElements;
+        }
         this.filterDpts();
       },
       error => {
         console.log("error = ", error)
       }
     )
-
   }
 
   openDrawer(id: number): void {
@@ -76,13 +77,9 @@ export class DptComponent implements  OnInit {
       this.loadDpts()
     })
   }
-
   cancel(): void {
     // this.nzMessageService.info('click cancel');
   }
-
-
-
   searchDpts(): void {
     this.visible = false;
     // this.dpts = this.listOfData.filter(

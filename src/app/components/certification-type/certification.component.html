@@ -1,14 +1,14 @@
 <nz-card [nzTitle]="cardTitle" [nzExtra]="tabExtraTpl">
   <ng-template #cardTitle>
-    <i nz-icon nzType="branches"></i> Programs
+    <i nz-icon nzType="branches"></i> certification
   </ng-template>
   <ng-template #tabExtraTpl>
     <button nz-button nzType="primary" (click)="openDrawer(undefined)" class="add-button"><i nz-icon nzType="plus"></i>Add
-      Programs
+      certification
     </button>
   </ng-template>
   <nz-table
-    #basicTable [nzData]="programs"
+    #basicTable [nzData]="certification"
     nzSize="small"
     [nzFrontPagination]="false"
     [nzTotal]="totalElements"
@@ -18,8 +18,8 @@
     nzShowSizeChanger
     nzShowQuickJumper
     [nzLoading]="loading"
-    (nzPageIndexChange)="loadPrograms()"
-    (nzPageSizeChange)="loadPrograms(true)">
+    (nzPageIndexChange)="loadCertifications()"
+    (nzPageSizeChange)="loadCertifications(true)">
     <thead>
     <tr>
       <th>#</th>
@@ -43,7 +43,7 @@
            nz-tooltip="edit"></i>
         <nz-divider nzType="vertical"></nz-divider>
          <a class="delete-button" nz-popconfirm="" nzPopconfirmTitle="Are you sure delete this task?"
-           (nzOnConfirm)="deletePrograms(data.id)" (nzOnCancel)="cancel()">
+            (nzOnConfirm)="deleteCertification(data.id)" (nzOnCancel)="cancel()">
           <i   nzTooltipColor="red" nz-icon nzType="delete" nzTheme="outline"
              nz-tooltip="delete"></i>
         </a>

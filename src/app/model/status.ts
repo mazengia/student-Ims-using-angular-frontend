@@ -6,7 +6,7 @@ export class Status{
 }
 export class StatusResponse {
   _embedded: {
-    statusDTOList: Status[];
+    statusDTOes: Status[];
   };
   page:page;
 }

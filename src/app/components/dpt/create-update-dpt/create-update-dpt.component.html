@@ -20,17 +20,15 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-
-
-  <div formGroupName="programType">
+  <div formGroupName="certifications">
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>program Type</nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Please Select programType!">
+      <nz-form-label [nzSpan]="7" nzRequired>Certifications Type</nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Please Select certifications!">
         <nz-select class="" formControlName="id"
-                   nzPlaceHolder="Select Program Type"
+                   nzPlaceHolder="Select certifications"
                    nzAllowClear
                    nzShowSearch>
-          <nz-option *ngFor="let data of programType"
+          <nz-option *ngFor="let data of certifications"
                      [nzValue]="data.id"
                      [nzLabel]="data.name">
             <nz-divider nzType="vertical"></nz-divider>
@@ -40,11 +38,9 @@
       </nz-form-control>
     </nz-form-item>
   </div>
-
-
   <div formGroupName="programs">
     <nz-form-item>
-      <nz-form-label [nzSpan]="7" nzRequired>Program </nz-form-label>
+      <nz-form-label [nzSpan]="7" nzRequired>Program</nz-form-label>
       <nz-form-control [nzSpan]="24" nzErrorTip="Please Select Program  !">
         <nz-select formControlName="id"
                    nzPlaceHolder="Select Program  "

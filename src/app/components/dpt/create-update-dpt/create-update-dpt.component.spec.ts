@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CreateUpdateDptComponent } from './create-update-dpt.component';
+import {CreateUpdateDptComponent} from './create-update-dpt.component';
 
 describe('CreateUpdateDptComponent', () => {
   let component: CreateUpdateDptComponent;

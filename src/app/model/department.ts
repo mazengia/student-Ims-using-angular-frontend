@@ -1,4 +1,4 @@
- import {page} from './Page';
+import {page} from './Page';
 
 export class Department{
   id	  :string;

@@ -26,7 +26,7 @@
       <th>#</th>
       <th>Department Name</th>
       <th>Program</th>
-      <th>Program Type</th>
+      <th>Certifications Type</th>
       <th>Action</th>
     </tr>
     </thead>
@@ -35,7 +35,7 @@
       <td>{{ i + 1 }}</td>
       <td>{{ data.department.name }}</td>
       <td>{{ data.programs.name }}</td>
-      <td>{{ data.programType.name }}</td>
+      <td>{{ data.certifications.name }}</td>
       <td nzAlign="center">
         <i class="edit-btn" nz-icon nzType="edit" (click)="openDrawer(data.id)" nzTheme="outline" nz-tooltip="edit"></i>
         <nz-divider nzType="vertical"></nz-divider>

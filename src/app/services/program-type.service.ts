@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import {ProgramResponse} from '../model/program';
+import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ProgramType, ProgramTypeResponse} from "../model/programType";
+
 @Injectable({
   providedIn: 'root'
 })

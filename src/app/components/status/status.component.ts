@@ -72,7 +72,7 @@ export class StatusComponent implements OnInit {
       res => {
         console.log(res)
         this.loading = false;
-        this.statuses = res._embedded.statusDTOList;
+        this.statuses = res._embedded.statusDTOes;
         this.totalElements = res.page.totalElements;
         this.filterStatus();
       },

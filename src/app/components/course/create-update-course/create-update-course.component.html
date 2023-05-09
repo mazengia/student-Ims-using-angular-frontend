@@ -39,7 +39,7 @@
         nzAllowClear
         nzShowSearch>
         <nz-option *ngFor="let data of departments"
-                   [nzValue]=" data.id"
+                   [nzValue]="data.id"
                    [nzLabel]="data.name">
           <nz-divider nzType="vertical"></nz-divider>
           <strong>{{data?.name}}</strong>

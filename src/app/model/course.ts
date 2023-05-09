@@ -11,7 +11,7 @@ export class Course{
 }
 export class CourseResponse {
   _embedded: {
-    courseDTOList: Course[];
+    courseDTOes: Course[];
   };
   page:page;
 }

@@ -70,8 +70,9 @@ export class RolesComponent implements OnInit {
     this.loading = true;
     this.rolesService.getRoles(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
+        console.log(res)
         this.loading = false;
-        this.roles = res._embedded.rolesDTOList;
+        this.roles = res._embedded.rolesDTOes;
         this.totalElements = res.page.totalElements;
         this.filterRoles();
       },

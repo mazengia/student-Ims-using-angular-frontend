@@ -3,14 +3,14 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzDrawerRef} from "ng-zorro-antd/drawer";
 import {finalize, first} from "rxjs/operators";
-import {ProgramService} from "../../../services/program.service";
+import {CertificationService} from "../../../services/certificationervice.service";
 
 @Component({
-  selector: 'app-create-update-program',
-  templateUrl: './create-update-program.component.html',
-  styleUrls: ['./create-update-program.component.scss']
+  selector: 'app-create-update-certification',
+  templateUrl: './create-update-certification.component.html',
+  styleUrls: ['./create-update-certification.component.scss']
 })
-export class CreateUpdateProgramComponent  implements OnInit {
+export class CreateUpdateCertificationComponent implements OnInit {
   isAddMode = true;
   loading = false;
   submitted = false;
@@ -19,7 +19,7 @@ export class CreateUpdateProgramComponent  implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private programService: ProgramService,
+    private programService: CertificationService,
     private notification: NzNotificationService,
     private drawerRef: NzDrawerRef<string>
   ) {
@@ -51,7 +51,7 @@ export class CreateUpdateProgramComponent  implements OnInit {
 
   savePrograms(): void {
     this.resetForm();
-    this.programService.addProgram(this.programsForm.value)
+    this.programService.addCertification(this.programsForm.value)
       .pipe(finalize(() => {
         this.drawerRef.close()
       }))
@@ -84,7 +84,7 @@ export class CreateUpdateProgramComponent  implements OnInit {
 
   private loadProgramsById() {
     this.programService
-      .findProgramById(this.value)
+      .findCertificationById(this.value)
       .pipe(first())
       .subscribe((res) => {
         if (!this.isAddMode) {
@@ -97,7 +97,7 @@ export class CreateUpdateProgramComponent  implements OnInit {
 
     this.resetForm();
     this.programService
-      .updateProgram(this.value, this.programsForm.value)
+      .updateCertification(this.value, this.programsForm.value)
       .subscribe(
         data => {
           this.createNotification(

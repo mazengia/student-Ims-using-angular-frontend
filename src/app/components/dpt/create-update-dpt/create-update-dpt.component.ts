@@ -3,11 +3,11 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DepartmentService} from "../../../services/department.service";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {NzDrawerRef} from "ng-zorro-antd/drawer";
-import {finalize, first} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {DptService} from "../../../services/dpt.service";
-import {ProgramService} from "../../../services/program.service";
+import {CertificationService} from "../../../services/certificationervice.service";
 import {ProgramTypeService} from "../../../services/program-type.service";
-import {Program} from "../../../model/program";
+import {Certification} from "../../../model/certification";
 import {Department} from "../../../model/department";
 import {ProgramType} from "../../../model/programType";
 
@@ -21,8 +21,8 @@ export class CreateUpdateDptComponent implements OnInit {
   loading = false;
   submitted = false;
   departments: Department[];
-  programs: Program[];
-  programType: ProgramType[];
+  programs: Certification[];
+  certifications: ProgramType[];
   @Input() value: number;
   dptForm: FormGroup;
 
@@ -30,21 +30,21 @@ export class CreateUpdateDptComponent implements OnInit {
     private fb: FormBuilder,
     private dptService: DptService,
     private departmentService: DepartmentService,
-    private programService: ProgramService,
+    private certificationService: CertificationService,
     private programTypeService: ProgramTypeService,
     private notification: NzNotificationService,
     private drawerRef: NzDrawerRef<string>
   ) {
     this.dptForm = this.fb.group({
       department: this.fb.group({id: ['', [Validators.required]]}),
-      programType: this.fb.group({id: ['', [Validators.required]]}),
+      certifications: this.fb.group({id: ['', [Validators.required]]}),
       programs: this.fb.group({id: ['', [Validators.required]]})
     });
   }
 
   ngOnInit(): void {
     this.isAddMode = !this.value;
-    this.loadPrograms();
+    this.loadCertification();
     this.loadDepartments();
     this.loadProgramsType();
     if (this.value) {
@@ -142,11 +142,12 @@ export class CreateUpdateDptComponent implements OnInit {
         })
   }
 
-  loadPrograms() {
-    this.programService.getPrograms()
-      .subscribe(res => {
+  loadCertification() {
+    this.certificationService.getCertification().subscribe(res => {
           console.log("pro = ", res)
-          this.programs = res._embedded.programDTOList;
+        if(res?._embedded) {
+          this.certifications = res._embedded. certificationDTOes;
+        }
         },
         error => {
           console.log('error=', error);
@@ -157,7 +158,9 @@ export class CreateUpdateDptComponent implements OnInit {
     this.programTypeService.getProgramsType()
       .subscribe(res => {
         console.log("protype = ", res)
-      this.programType = res._embedded.programTypeDTOList;
+        if(res?._embedded) {
+          this.programs = res._embedded?.programDTOes;
+        }
     })
   }
 }

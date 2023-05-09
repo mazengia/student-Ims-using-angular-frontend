@@ -70,13 +70,19 @@ export class StudentComponent implements OnInit {
     this.studentService.getStudent(this.pageNumber - 1, this.pageSize).subscribe(
       res => {
         console.log("student = ",res)
-        this.students = res._embedded.studentDTOList;
+        this.students = res._embedded.userDtoes;
         this.totalElements = res.page.totalElements;
         this.filterStudent();
         this.isDataFound = true;
       },
       error => {
         console.log("error = ", error)
+
+        this.createNotification(
+          'error',
+          'Error',
+          error.error.apierror.message
+        );
         this.isDataFound = false;
       }
     )

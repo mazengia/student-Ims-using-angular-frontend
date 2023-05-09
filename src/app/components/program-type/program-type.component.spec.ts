@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ProgramTypeComponent } from './program-type.component';
+import {ProgramTypeComponent} from './program-type.component';
 
 describe('ProgramTypeComponent', () => {
   let component: ProgramTypeComponent;

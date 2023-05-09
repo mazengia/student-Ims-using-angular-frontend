@@ -1,4 +1,5 @@
 import {page} from "./Page";
+import {Dpt} from "./dpt";
 
 export class Student {
   id?: number;
@@ -7,11 +8,12 @@ export class Student {
   username: string;
   email: string;
   password: string;
+  dpt:Dpt;
 }
 
 export class StudentResponse {
   _embedded: {
-    studentDTOList: Student[];
+    userDtoes: Student[];
   };
   page: page;
 }

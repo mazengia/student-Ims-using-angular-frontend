@@ -1,4 +1,3 @@
-
 import {Department} from './department';
 
 
